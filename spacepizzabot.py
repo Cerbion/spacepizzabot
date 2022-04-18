@@ -18,7 +18,7 @@ if token is None:
     raise RuntimeError('no Token set, exiting script')
 
 # WEB SOCKET
-print(environ.get('PORT') + " or " + environ.get('$PORT'))
+print(str(environ.get('PORT')) + " or " + str(environ.get('$PORT')))
 socket.listen(int(environ.get('PORT')))
 
 # INTENTS
