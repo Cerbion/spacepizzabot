@@ -4,12 +4,19 @@ import json
 import discord
 
 # CONFIG
-with open('config.json') as json_file:
-    config = json.load(json_file)
+try:
+    with open('config.json') as json_file:
+        config = json.load(json_file)
+        token = config['token']
+except:
+    print('no config.json found, will try to continue by using ')
 
-token = config['token']
 if environ.get('TOKEN') is not None:
     token = environ.get('TOKEN')
+
+if token is None:
+    raise RuntimeError('no Token set, exiting script')
+
 
 # INTENTS
 intents = discord.Intents.default()
