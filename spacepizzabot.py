@@ -1,5 +1,10 @@
 from operator import truediv
+import json
 import discord
+
+# CONFIG
+with open('config.json') as json_file:
+    config = json.load(json_file)
 
 # INTENTS
 intents = discord.Intents.default()
@@ -114,4 +119,4 @@ async def log(message):
 
 
 # EXECUTE LOGIC
-bot.run('OTY0MTgwMjA3NDUzOTk1MDM5.Ylg4yw.xbUlflXE_K0-x5YGUksnbYlxX5s')
+bot.run(config['token'])
