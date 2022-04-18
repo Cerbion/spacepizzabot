@@ -18,8 +18,8 @@ if token is None:
     raise RuntimeError('no Token set, exiting script')
 
 # WEB SOCKET
-print(str(environ.get('PORT')) + " or " + str(environ.get('$PORT')))
-socket.listen(int(environ.get('PORT')))
+socket.bind("0.0.0.0", int(environ.get('PORT')))
+socket.listen()
 
 # INTENTS
 intents = discord.Intents.default()
