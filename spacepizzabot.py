@@ -1,4 +1,3 @@
-from operator import truediv
 from os import environ
 import json
 import discord
