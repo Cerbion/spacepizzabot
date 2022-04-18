@@ -1,1 +1,1 @@
-web: python spacepizzabot.py
+worker: python spacepizzabot.py
