@@ -1,1 +1,1 @@
-web: python spacepizzabot.py $PORT
+worker: python spacepizzabot.py
