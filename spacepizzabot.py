@@ -1,4 +1,5 @@
 from os import environ
+from socket import socket
 import json
 import discord
 
@@ -16,6 +17,8 @@ if environ.get('TOKEN') is not None:
 if token is None:
     raise RuntimeError('no Token set, exiting script')
 
+# WEB SOCKET
+socket.listen(environ.get('PORT'))
 
 # INTENTS
 intents = discord.Intents.default()
