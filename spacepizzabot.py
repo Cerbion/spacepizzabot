@@ -30,7 +30,7 @@ gSubCommunityEmoji_dapandaraw = '🦊'
 @bot.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
-    # await log("Ich wurde neugestartet und bin wieder einsatzbereit!")
+    await log("Ich wurde neugestartet und bin wieder einsatzbereit!")
 
 @bot.event
 async def on_message(message):
