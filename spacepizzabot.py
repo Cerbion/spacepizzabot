@@ -24,8 +24,8 @@ intents.reactions = True
 bot = discord.Client(intents=intents)
 
 # CONST
-gRuleMessageID = 964878898825424936
-gSubcommunityMessageID = 964879884952424539
+gRuleMessageID = int(environ.get('RULE_MSG_ID'))
+gSubcommunityMessageID = int(environ.get('SUBCOMMUNITY_MSG_ID'))
 gSubCommunityEmoji_cerbion = '🐙'
 gSubCommunityEmoji_nettgemeint = '🤖'
 gSubCommunityEmoji_thorstenselbst = '🎵'
@@ -124,7 +124,7 @@ async def on_raw_reaction_remove(payload):
 
 # LOGGING
 async def log(message):
-    channel = bot.get_channel(962846024580350013)
+    channel = bot.get_channel(int(environ.get('LOGGING_CHANNEL_ID')))
     await channel.send(message)
 
 
