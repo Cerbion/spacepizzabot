@@ -1,0 +1,25 @@
+{
+  "name": "space-pizza-bot",
+  "version": "0.0.1",
+  "description": "A JS Discord Bot designed to work for the Space Pizza Inn discord Server.",
+  "main": "spacepizzabot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cerbion/SpacePizzaBot.git"
+  },
+  "author": "Ricardo \"Cerbion\" G.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Cerbion/SpacePizzaBot/issues"
+  },
+  "homepage": "https://github.com/Cerbion/SpacePizzaBot#readme",
+  "dependencies": {
+    "discord.js": "^13.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.14.0"
+  }
+}
