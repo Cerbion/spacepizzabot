@@ -1,6 +1,8 @@
 from os import environ
 import json
 import discord
+from discord_slash.utils.manage_components import create_button, create_actionrow
+from discord_slash.model import ButtonStyle
 
 # CONFIG
 try:
@@ -46,12 +48,19 @@ async def on_message(message):
         await message.channel.send('Pong!')
 
     if message.content.startswith('!embed'):
+        buttons = [
+            create_button(
+                style=ButtonStyle.green,
+                label="TEST"
+            ),
+        ]
+        action_row = create_actionrow(*buttons)
         embed = discord.Embed()
         embed.title = "Test Titel"
         embed.color = discord.Color.from_rgb(255,127,63)
         embed.description = "Die geile Beschreibung"
         embed.add_field(name="Titel1", value="Test test 123", inline=False)
-        await message.channel.send(embed=embed)
+        await message.channel.send(embed=embed, components=[action_row])
 
 @bot.event
 async def on_raw_reaction_add(payload):
