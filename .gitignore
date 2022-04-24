@@ -2,3 +2,4 @@ config.json
 *.code-workspace
 node_modules/
 .env
+.vscode/launch.json
