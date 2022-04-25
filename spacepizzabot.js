@@ -4,19 +4,27 @@ const dotenv = require('dotenv');
 
 // Read out ENV values
 dotenv.config();
-const TOKEN = process.env.TOKEN;
-const GUILDID = process.env.GUILDID;
-const SUBCOMMUNITY_MSG_ID = process.env.SUBCOMMUNITY_MSG_ID;
-const RULE_MSG_ID = process.env.RULE_MSG_ID;
-const LOGGING_CHANNEL_ID = process.env.LOGGING_CHANNEL_ID;
+var TOKEN = process.env.TOKEN;
+var GUILDID = process.env.GUILDID;
+var CLIENTID = process.env.CLIENTID;
+var SUBCOMMUNITY_MSG_ID = process.env.SUBCOMMUNITY_MSG_ID;
+var RULE_MSG_ID = process.env.RULE_MSG_ID;
+var LOGGING_CHANNEL_ID = process.env.LOGGING_CHANNEL_ID;
+
+
+// Handle Intents
+ints = Intents.default();
+intents.members = true;
+intents.reactions = true;
 
 // Create a new client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+// const bot = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const bot = new Client({ intents: intents });
 
 // When the client is ready, run this code (only once)
-client.once('ready', () => {
+bot.once('ready', () => {
 	console.log('Ready!');
 });
 
 // Login to Discord with your client's token
-client.login(TOKEN);
+bot.login(TOKEN);
