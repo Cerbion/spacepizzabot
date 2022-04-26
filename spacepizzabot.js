@@ -34,51 +34,49 @@ bot.on('interactionCreate', async interaction => {
 	} else if (commandName === 'roles') {
 		const embed = new MessageEmbed()
 			.setColor('#44ff88')
-			.setTitle('🍕 Mit wem willst du Pizza essen?')
-			.setAuthor({ name: 'Das Space-Pizza-Inn Team'})
-			.setDescription('____________________')
+			.setTitle('🍕 Mit wem möchtest du Pizza essen?')
+			.setDescription('Klicke auf die Buttons zum folgen/entfolgen.')
 			.setThumbnail('https://cerbion.net/content/spacepizzainn/pizza.png')
 			.addFields(
 				{ name: '\u200B', value: '\u200B' },
-				{ name: '🔔 Benachrichtigungen', value: 'Du bekommst nur für die Streamer denen du folgst Benachrichtigungen wenn sie Live gehen oder wenn es etwas wichtiges gibt.' },
-				{ name: '\u200B', value: '\u200B' },
-				{ name: '💬 Kanäle', value: 'Für jeden Streamer gibt es einen Bereich mit Kanälen, den du nur siehst wenn du ihm/ihr folgst.' },
+				{ name: '🔔 Benachrichtigungen', value: '• Du wirst nur für die Streamer angepingt denen du folgst.' },
+				{ name: '💬 Kanäle', value: '• Du siehst spezielle Kanäle nur für die Streamer denen du folgst.' },
 			)
-			.setImage('https://cerbion.net/content/spacepizzainn/pizza.png');
+			;// .setImage('https://cerbion.net/content/spacepizzainn/pizza.png');
 
 		const row = new MessageActionRow()
 			.addComponents(
 				new MessageButton()
 					.setCustomId('cerb')
 					.setLabel('Cerbion')
-					.setStyle('PRIMARY')
+					.setStyle('SUCCESS')
 					.setEmoji('🐙'),
 			).addComponents(
 				new MessageButton()
 					.setCustomId('nett')
 					.setLabel('nettgemeint')
-					.setStyle('PRIMARY')
+					.setStyle('SUCCESS')
 					.setEmoji('🤖'),
 			).addComponents(
 				new MessageButton()
 					.setCustomId('thor')
 					.setLabel('Thorsten')
-					.setStyle('PRIMARY')
+					.setStyle('SUCCESS')
 					.setEmoji('🎵'),
 			).addComponents(
 				new MessageButton()
 					.setCustomId('lita')
 					.setLabel('Lita')
-					.setStyle('PRIMARY')
+					.setStyle('SUCCESS')
 					.setEmoji('🐱'),
 			).addComponents(
 				new MessageButton()
 					.setCustomId('pand')
 					.setLabel('Panda')
-					.setStyle('PRIMARY')
+					.setStyle('SUCCESS')
 					.setEmoji('🦊'),
 			);
-		await interaction.reply({ content: 'Rollenembed in Arbeit.', ephemeral: true, embeds: [embed], components: [row] });
+		await interaction.reply({ ephemeral: false, embeds: [embed], components: [row] });
 	} else if (commandName === 'ban') {
 		await interaction.reply(`Bann Funktion in Arbeit.`);
 	} else if (commandName === 'update') {
