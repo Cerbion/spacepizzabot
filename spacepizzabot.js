@@ -1,5 +1,5 @@
 // Require the necessary discord.js classes
-const { Client, Intents, MessageActionRow, MessageButton, MessageSelectMenu, MessageEmbed } = require('discord.js');
+const { Client, Intents, MessageActionRow, MessageButton, MessageSelectMenu, MessageEmbed, MessageComponentInteraction } = require('discord.js');
 const dotenv = require('dotenv');
 
 // Read out ENV values
@@ -10,6 +10,11 @@ var CLIENTID = process.env.CLIENTID;
 var SUBCOMMUNITY_MSG_ID = process.env.SUBCOMMUNITY_MSG_ID;
 var RULE_MSG_ID = process.env.RULE_MSG_ID;
 var LOGGING_CHANNEL_ID = process.env.LOGGING_CHANNEL_ID;
+var ROLE_CERB = process.env.ROLE_CERB;
+var ROLE_NETT = process.env.ROLE_NETT;
+var ROLE_THOR = process.env.ROLE_THOR;
+var ROLE_LITA = process.env.ROLE_LITA;
+var ROLE_PAND = process.env.ROLE_PAND;
 
 
 // Create a new client instance
@@ -104,8 +109,73 @@ bot.on('interactionCreate', async interaction => {
 });
 
 // Button Usage
-bot.on('interactionCreate', interaction => {
+bot.on('interactionCreate', async interaction => {
 	if (!interaction.isButton()) return;
+
+	const buttonName = interaction.customId;
+	const user = interaction.member;
+
+	if (buttonName == 'cerb')
+	{
+		if(user.roles.cache.some(role => role.id === ROLE_CERB))
+		{
+			user.roles.remove(ROLE_CERB);
+			await interaction.reply({ content: 'Du hast Cerbion entfolgt!', ephemeral: true });
+		}
+		else
+		{
+			user.roles.add(ROLE_CERB);
+			await interaction.reply({ content: 'Du folgst nun Cerbion!', ephemeral: true });
+		}
+	} else if (buttonName == 'nett')
+	{
+		if(user.roles.cache.some(role => role.id === ROLE_NETT))
+		{
+			user.roles.remove(ROLE_NETT);
+			await interaction.reply({ content: 'Du hast nettgemeint entfolgt!', ephemeral: true });
+		}
+		else
+		{
+			user.roles.add(ROLE_NETT);
+			await interaction.reply({ content: 'Du folgst nun nettgemeint!', ephemeral: true });
+		}
+	} else if (buttonName == 'thor')
+	{
+		if(user.roles.cache.some(role => role.id === ROLE_THOR))
+		{
+			user.roles.remove(ROLE_THOR);
+			await interaction.reply({ content: 'Du hast Thorsten entfolgt!', ephemeral: true });
+		}
+		else
+		{
+			user.roles.add(ROLE_THOR);
+			await interaction.reply({ content: 'Du folgst nun Thorsten!', ephemeral: true });
+		}
+	} else if (buttonName == 'lita')
+	{
+		if(user.roles.cache.some(role => role.id === ROLE_LITA))
+		{
+			user.roles.remove(ROLE_LITA);
+			await interaction.reply({ content: 'Du hast Lita entfolgt!', ephemeral: true });
+		}
+		else
+		{
+			user.roles.add(ROLE_LITA);
+			await interaction.reply({ content: 'Du folgst nun Lita!', ephemeral: true });
+		}
+	} else if (buttonName == 'pand')
+	{
+		if(user.roles.cache.some(role => role.id === ROLE_PAND))
+		{
+			user.roles.remove(ROLE_PAND);
+			await interaction.reply({ content: 'Du hast Panda entfolgt!', ephemeral: true });
+		}
+		else
+		{
+			user.roles.add(ROLE_PAND);
+			await interaction.reply({ content: 'Du folgst nun Panda!', ephemeral: true });
+		}
+	}
 	console.log(interaction);
 });
 
@@ -115,7 +185,8 @@ bot.login(TOKEN);
 
 
 /// FUNCTIONS ///
-function log(_content)
+async function log(_content)
 {
+	// await
     return;
 }
