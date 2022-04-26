@@ -1,1 +1,1 @@
-worker: node spacepizzabot.py
+worker: node spacepizzabot.js
