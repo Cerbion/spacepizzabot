@@ -7,14 +7,13 @@ dotenv.config();
 var TOKEN = process.env.TOKEN;
 var GUILDID = process.env.GUILDID;
 var CLIENTID = process.env.CLIENTID;
-var SUBCOMMUNITY_MSG_ID = process.env.SUBCOMMUNITY_MSG_ID;
-var RULE_MSG_ID = process.env.RULE_MSG_ID;
 var LOGGING_CHANNEL_ID = process.env.LOGGING_CHANNEL_ID;
 var ROLE_CERB = process.env.ROLE_CERB;
 var ROLE_NETT = process.env.ROLE_NETT;
 var ROLE_THOR = process.env.ROLE_THOR;
 var ROLE_LITA = process.env.ROLE_LITA;
 var ROLE_PAND = process.env.ROLE_PAND;
+var ROLE_VERIFIED = process.env.ROLE_VERIFIED;
 
 
 // Create a new client instance
@@ -23,12 +22,40 @@ const bot = new Client({ intents: [Intents.FLAGS.GUILDS] });
 // When the client is ready, run this code (only once)
 bot.once('ready', () => {
 	console.log('Ready!');
+	const worktodo = [
+		'Tisch 3 sieht ja schrecklich aus! Da fange ich mal besser gleich an.',
+		'da kommt schon der erste Gast, höchste Zeit produktiv zu werden!',
+		'hat jemand mein "Frisch gewischt!" Schild gesehen?',
+		'ich heize schonmal den Ofen vor!',
+		'na nu? Da ist ja zu viel Geld in der Kasse... war das wieder Jay!?',
+		'ich fürchte bei Tisch 12 ist jemand eingeschlafen... oder Tod.',
+		'huch, ich glaube wir müssen bald wieder Mehl kaufen.',
+		'oh man... Kann bitte jemand Panda sagen sie soll nicht ständig in der Pizzaküche mit Öl spritzen!?',
+		'die erste Bestellung kommt sogar schon rei- moment die ist ja von Lita!',
+		'aber was sind das für wundervolle Klänge? Ach Thorsten streamt wieder, alles klar.',
+		'wollen wir bei Zeiten mal den Schichtplan- nein? Nagut.',
+		'bereit die beste Pizza der ganzen Galaxie zu backen!',
+		'ihr glaubt ja nicht wie viele Strohhalme jeden Tag verbraucht werden, wie kommt das bloß...?',
+		'da liegt so ein komische Typ mit einem Senfglas hinter dem Tresen, bewusstlos von der ganzen Pizza, ist das nettgemeint?',
+		'ein neuer Tag, Zeit für mehr Pizza!',
+		'ist heute Montag? Fühlt sich irgendwie wie so ein Montag an.',
+		'sagt mal ist euch auch manchmal nach singen? ♫',
+		'ich gehe schon mal vorne aufschließen.',
+		'kann bitte jemand Cerbion mal bitte davon überzeugen mit dem ganzen Geschwafel über Elden Ring aufzuhören!?',
+		'412.540 Pizza Sorten erfolgreich geladen.',
+		'nur noch schnell pinkeln gehen!',
+		'Ananas oder keine Ananas auf Pizza, das ist hier die Frage!',
+		'öhm, ich glaube an Tisch 9 sitzt seit gestern der selbe übermüdete Gast und hat mittlerweile locker 4 Pizzen weg, ach es ist Strausi!',
+		'"Pizza Zumba" ist das heutige Spezialangebot, mit großzügigem Rabatt für Studenten... selbstverständlich.'];
+	log(`Ich beginne nun meine Schicht, ${worktodo.random()}`);
+	bot.user.setPresence({ activities: [{ name: 'Kellner' }] });
 });
 
 bot.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
 
 	const { commandName } = interaction;
+	log(`${interaction.user.username} hat den Befehl /${commandName} ausgeführt.`);
 
 	if (commandName === 'ping') {
 		await interaction.reply('Pong!');
@@ -81,7 +108,21 @@ bot.on('interactionCreate', async interaction => {
 					.setStyle('SUCCESS')
 					.setEmoji('🦊'),
 			);
-		await interaction.reply({ ephemeral: false, embeds: [embed], components: [row] });
+		await interaction.reply({ ephemeral: false, embeds: [embed], components: [row], fetchReply: true  });
+	} else if (commandName === 'rules') {
+		const embed = new MessageEmbed()
+			.setColor('#44ff88')
+			.setTitle('Hast du alle Regeln gelesen, verstanden und akzeptierst diese?');
+
+		const row = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId('rules')
+					.setLabel('Ja, Regeln sind cool.')
+					.setStyle('PRIMARY')
+					.setEmoji('☑️'),
+			);
+		await interaction.reply({ ephemeral: false, embeds: [embed], components: [row], fetchReply: true  });
 	} else if (commandName === 'ban') {
 		await interaction.reply(`Bann Funktion in Arbeit.`);
 	} else if (commandName === 'update') {
@@ -121,11 +162,13 @@ bot.on('interactionCreate', async interaction => {
 		{
 			user.roles.remove(ROLE_CERB);
 			await interaction.reply({ content: 'Du hast Cerbion entfolgt!', ephemeral: true });
+			log(`${interaction.user.username} folgt nicht mehr Cerbion.`);
 		}
 		else
 		{
 			user.roles.add(ROLE_CERB);
 			await interaction.reply({ content: 'Du folgst nun Cerbion!', ephemeral: true });
+			log(`${interaction.user.username} folgt jetzt Cerbion.`);
 		}
 	} else if (buttonName == 'nett')
 	{
@@ -133,11 +176,13 @@ bot.on('interactionCreate', async interaction => {
 		{
 			user.roles.remove(ROLE_NETT);
 			await interaction.reply({ content: 'Du hast nettgemeint entfolgt!', ephemeral: true });
+			log(`${interaction.user.username} folgt nicht mehr nettgemeint.`);
 		}
 		else
 		{
 			user.roles.add(ROLE_NETT);
 			await interaction.reply({ content: 'Du folgst nun nettgemeint!', ephemeral: true });
+			log(`${interaction.user.username} folgt jetzt nettgemeint.`);
 		}
 	} else if (buttonName == 'thor')
 	{
@@ -145,11 +190,13 @@ bot.on('interactionCreate', async interaction => {
 		{
 			user.roles.remove(ROLE_THOR);
 			await interaction.reply({ content: 'Du hast Thorsten entfolgt!', ephemeral: true });
+			log(`${interaction.user.username} folgt nicht mehr Thorsten.`);
 		}
 		else
 		{
 			user.roles.add(ROLE_THOR);
 			await interaction.reply({ content: 'Du folgst nun Thorsten!', ephemeral: true });
+			log(`${interaction.user.username} folgt jetzt Thorsten.`);
 		}
 	} else if (buttonName == 'lita')
 	{
@@ -157,11 +204,13 @@ bot.on('interactionCreate', async interaction => {
 		{
 			user.roles.remove(ROLE_LITA);
 			await interaction.reply({ content: 'Du hast Lita entfolgt!', ephemeral: true });
+			log(`${interaction.user.username} folgt nicht mehr Lita.`);
 		}
 		else
 		{
 			user.roles.add(ROLE_LITA);
 			await interaction.reply({ content: 'Du folgst nun Lita!', ephemeral: true });
+			log(`${interaction.user.username} folgt jetzt Lita.`);
 		}
 	} else if (buttonName == 'pand')
 	{
@@ -169,14 +218,27 @@ bot.on('interactionCreate', async interaction => {
 		{
 			user.roles.remove(ROLE_PAND);
 			await interaction.reply({ content: 'Du hast Panda entfolgt!', ephemeral: true });
+			log(`${interaction.user.username} folgt nicht mehr Panda.`);
 		}
 		else
 		{
 			user.roles.add(ROLE_PAND);
 			await interaction.reply({ content: 'Du folgst nun Panda!', ephemeral: true });
+			log(`${interaction.user.username} folgt jetzt Panda.`);
+		}
+	}else if (buttonName == 'rules')
+	{
+		if(user.roles.cache.some(role => role.id === ROLE_VERIFIED))
+		{
+			await interaction.reply({ content: 'Du bist bereits verifiziert!', ephemeral: true });
+		}
+		else
+		{
+			user.roles.add(ROLE_VERIFIED);
+			await interaction.reply({ content: 'Du bist nun verifiziert, viel Spaß auf dem Server!', ephemeral: true });
+			log(`${interaction.user.username} hat die Regeln angenommen.`);
 		}
 	}
-	console.log(interaction);
 });
 
 // Login to Discord with your client's token
@@ -187,6 +249,11 @@ bot.login(TOKEN);
 /// FUNCTIONS ///
 async function log(_content)
 {
-	// await
+	const channel = bot.channels.cache.get(LOGGING_CHANNEL_ID);
+	channel.send(_content);
     return;
+}
+
+Array.prototype.random = function(){
+  return this[Math.floor(Math.random()*this.length)];
 }

@@ -14,6 +14,7 @@ const commands = [
 	new SlashCommandBuilder().setName('server').setDescription('Gibt die Serverinfo aus.'),
 	new SlashCommandBuilder().setName('user').setDescription('Gibt die Userinfo aus.'),
 	new SlashCommandBuilder().setName('roles').setDescription('Generiert die Embed-Nachricht für die Rollenvergabe neu.'),
+	new SlashCommandBuilder().setName('rules').setDescription('Generiert die Embed-Nachricht zum annehmen der Regeln.'),
 	new SlashCommandBuilder().setName('ban').setDescription('Verbannt einen Nutzer aus einer Subcommunity.'),
 	new SlashCommandBuilder().setName('update').setDescription('Reloaded alle variablen des Bots.'),
 ]
