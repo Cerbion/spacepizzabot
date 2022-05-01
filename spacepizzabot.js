@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 
 // Read out ENV values
 dotenv.config();
+const ENV = process.env.ENV;
 var TOKEN = process.env.TOKEN;
 var GUILDID = process.env.GUILDID;
 var CLIENTID = process.env.CLIENTID;
@@ -68,13 +69,12 @@ bot.on('interactionCreate', async interaction => {
 			.setColor('#44ff88')
 			.setTitle('🍕 Mit wem möchtest du Pizza essen?')
 			.setDescription('Klicke auf die Buttons zum folgen/entfolgen.')
-			.setThumbnail('https://cerbion.net/content/spacepizzainn/pizza.png')
+			.setThumbnail('https://cerbion.net/content/spacepizzainn/SpacePizzaInnSpinning.gif')
 			.addFields(
-				{ name: '\u200B', value: '\u200B' },
+				{ name: '\u2800', value: '\u2800'.repeat(20) },
 				{ name: '🔔 Benachrichtigungen', value: '• Du wirst nur für die Streamer angepingt denen du folgst.' },
 				{ name: '💬 Kanäle', value: '• Du siehst spezielle Kanäle nur für die Streamer denen du folgst.' },
-			)
-			;// .setImage('https://cerbion.net/content/spacepizzainn/pizza.png');
+			);
 
 		const row = new MessageActionRow()
 			.addComponents(
@@ -119,7 +119,7 @@ bot.on('interactionCreate', async interaction => {
 				new MessageButton()
 					.setCustomId('rules')
 					.setLabel('Ja, Regeln sind cool.')
-					.setStyle('PRIMARY')
+					.setStyle('SUCCESS')
 					.setEmoji('☑️'),
 			);
 		await interaction.reply({ ephemeral: false, embeds: [embed], components: [row], fetchReply: true  });
@@ -249,8 +249,10 @@ bot.login(TOKEN);
 /// FUNCTIONS ///
 async function log(_content)
 {
+	if(ENV === 'DEV') return;
+
 	const channel = bot.channels.cache.get(LOGGING_CHANNEL_ID);
-	channel.send(_content);
+	channel.send("> " + _content);
     return;
 }
 
