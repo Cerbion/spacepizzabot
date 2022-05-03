@@ -20,6 +20,7 @@ var ROLE_VERIFIED = process.env.ROLE_VERIFIED;
 
 // CONFIG
 const NL = "\n";
+const HR = "\n────────────────────────\n";
 
 
 // Create a new client instance
@@ -110,7 +111,7 @@ bot.on('interactionCreate', async interaction => {
 			.setDescription('Klicke auf die Buttons zum folgen/entfolgen.')
 			.setThumbnail('https://cerbion.net/content/spacepizzainn/SpacePizzaInnSpinning.gif')
 			.addFields(
-				{ name: '\u2800', value: '\u2800'.repeat(20) },
+				{ name: '\u2800', value: '\u2800' },
 				{ name: '🔔 Benachrichtigungen', value: '• Du wirst nur für die Streamer angepingt denen du folgst.' },
 				{ name: '💬 Kanäle', value: '• Du siehst spezielle Kanäle nur für die Streamer denen du folgst.' },
 			);
@@ -149,7 +150,19 @@ bot.on('interactionCreate', async interaction => {
 			);
 		await interaction.reply({ ephemeral: false, embeds: [embed], components: [row], fetchReply: true  });
 	} else if (commandName === 'rules') {
-		const rules = new MessageEmbed();
+		const rules = new MessageEmbed()
+			.setColor('#44ff88')
+			.setTitle('Discord Regeln')
+			.setDescription('Bitte lies dir folgende Regeln gründlich durch bevor du sie akzeptierst.')
+			.addFields(
+				{ name: 'Regel 1: Die "Wichtigste" Regel', value: 'Wir sprechen nicht über das Space Pizza Inn. ;)' + NL + 'Gib niemals eine Bestellung ab, die du nicht bezahlen kannst.' + HR},
+				{ name: 'Regel 2: Seid lieb zueinander', value: 'Wir wollen hier keine Hass-/Hetzrede, Rassismus, Sexismus, heftige Beleidigungen oder Spam.' + HR},
+				{ name: 'Regel 3: Wir wollen hier nichts “Anstößiges”', value: 'Keine anstößige Texte oder Bilder bzw. kontroverse Posts, außer sie sind gestattet und dienen in #18 + zur diskussion' + HR},
+				{ name: 'Regel 4: Discord Name = Twitch Name', value: 'Um verwirrung zu Vermeiden, wäre es von Vorteil in Discord den gleichen Namen zu haben, wie auf Twitch. So wissen wir, wer du bist!' + HR},
+				{ name: 'Regel 5: Pizza ist niemals politisch oder extrem', value: 'Jeder hat und darf seine Meinung haben. Aber Pizza diskutiert nicht! Danke!' + HR},
+				{ name: 'Regel 6: SEID LIEB!', value: 'Wer Kloppe anfängt wird ins All geschossen und muss damit leben!' + HR},
+				{ name: 'Regel 7: Lasst ein Trinkgeld für den Klomann da', value: '\u2800'},
+			);
 		const rulebutton = new MessageEmbed()
 			.setColor('#44ff88')
 			.setTitle('Hast du alle Regeln gelesen, verstanden und akzeptierst diese?');
