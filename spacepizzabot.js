@@ -1,6 +1,8 @@
 // Require the necessary discord.js classes
-const { Client, Intents, MessageActionRow, MessageButton, MessageSelectMenu, MessageEmbed, MessageComponentInteraction } = require('discord.js');
+const { Client, Intents, MessageActionRow, MessageButton, MessageSelectMenu, MessageEmbed } = require('discord.js');
+const { bold, italic, strikethrough, underscore, spoiler, quote, blockQuote } = require('@discordjs/builders');
 const dotenv = require('dotenv');
+const tmi = require('tmi.js');
 
 // Read out ENV values
 dotenv.config();
@@ -47,7 +49,33 @@ bot.once('ready', () => {
 		'nur noch schnell pinkeln gehen!',
 		'Ananas oder keine Ananas auf Pizza, das ist hier die Frage!',
 		'öhm, ich glaube an Tisch 9 sitzt seit gestern der selbe übermüdete Gast und hat mittlerweile locker 4 Pizzen weg, ach es ist Strausi!',
-		'"Pizza Zumba" ist das heutige Spezialangebot, mit großzügigem Rabatt für Studenten... selbstverständlich.'];
+		'"Pizza Zumba" ist das heutige Spezialangebot, mit großzügigem Rabatt für Studenten... selbstverständlich.',
+		'Ihhh ich glaube nettgemeint hat recht, aber wer zum Teufel kotzt bitte GEGEN eine Wand?!',
+		'da vorne kommt gerade ein sehr schafiger Gast, sieht aus wie Lish!',
+		'warum ist Pizza eigentlich so verdammt geil?',
+		'wusstet ihr, dass die größte Pizza der Welt 2013 in Rom gebacken wurde und über 23t wiegt bei 40m Durchmesser?',
+		'hey, psst: Es gibt einen Arzt der Pizza verschreibt, fragt mal nach Dr. Oetker :D',
+		'ich glaube ja, dass wir alle effizienter arbeiten könnten, wenn ich bezahlt werden würde.',
+		'die Eismaschine ist ja schon wieder kaputt! Meh.. darum kümmere ich mich mal... nächste Woche oder so...',
+		'ich suche ein Kind namens John Connor, achso und ich brauche eure Motorradjacke... und euer Motorrad!',
+		'wäre doch schrecklich wenn die Luftschleuse eine Fehlfunktion hätte...',
+		'Oh was Süßes!',
+		'laut Duden: (meist heiß servierte) aus dünn ausgerolltem und mit Tomatenscheiben, Käse u. a. belegtem Hefeteig gebackene pikante italienische Spezialität (meist in runder Form) - Pizza.',
+		'ich schrubbe hier, ich schrubbe da, ich schrubbe einfach wunderbaaar ♫',
+		'die Ungewissheit des Universum ist nur ein Vorgeschmack auf dessen Hitzetod.',
+		'hehehe.. Uranus.. versteht ihr?',
+		'ich werde noch mal fix los und hole mehr glutenfreies Mehl!',
+		'ahhh der Geruch von frischem Oregano... köstlich.',
+		'ich schwöre wenn ich noch mal jemanden dabei erwische einen Kaugummi unter einen Tisch zu kleben, DANN RASTE ICH AUS!',
+		'Pizza kann einem echt fast jeden doofen Tag retten.',
+		'wann ist nochmal meine Probezeit vorbei?',
+		'ERROR 59-200: CRITICAL FAILURE OF PROCESS - NUCLEAR INCIDENT IMMINENT.',
+		'Käse im Rand, ich sage euch Leute... KÄSE IM RAND.',
+		'Cerbion zwingt mich dazu ständig blöde Dinge von mir zu geben...',
+		'hey Lita! :wave:',
+		'das Kühlzeug wird langsam wieder warm, Yashia würdest du so nett sein und nochmal kurz deine Hände ranhalten?',
+		'das Leben.. ehh.. findet einen Weg...  zur Pizza!',
+		'sollten wir eine Selbsthilfegruppe eröffnen? Ihr wisst schon wegen dem Pizzafetisch.'];
 	log(`Ich beginne nun meine Schicht, ${worktodo.random()}`);
 	bot.user.setPresence({ activities: [{ name: 'Kellner' }] });
 });
