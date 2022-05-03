@@ -7,7 +7,10 @@ const tmi = require('tmi.js');
 // Read out ENV values
 dotenv.config();
 const ENV = process.env.ENV;
-var TOKEN = process.env.TOKEN;
+const TOKEN = process.env.TOKEN;
+const USERNAME = process.env.USERNAME;
+const SECRET = process.env.SECRET;
+const TWITCHID = process.env.TWITCHID;
 var GUILDID = process.env.GUILDID;
 var CLIENTID = process.env.CLIENTID;
 var LOGGING_CHANNEL_ID = process.env.LOGGING_CHANNEL_ID;
@@ -23,16 +26,35 @@ const NL = "\n";
 const HR = "\n────────────────────────\n";
 
 
-// Create a new client instance
-const bot = new Client({
+// Create a new discord client instance
+const dcbot = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_MESSAGES],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 });
 
+// Create a new twitch client instance
+const opts = {
+    identity: {
+        username: USERNAME,
+        password: 'oauth:' + SECRET
+    },
+        channels: [
+		'cerbion',
+		'thorstenselbst',
+		'nettgemeint',
+		'litanoela',
+		'dapandaraw' ],
+    options: {
+        clientID: TWITCHID
+    }
+};
+const twitchbot = new tmi.Client(opts);
+twitchbot.connect();
+
 // When the client is ready, run this code (only once)
-bot.once('ready', () => {
-	console.log('Ready!');
-	bot.user.setPresence({ activities: [{ name: 'Kellner' }] });
+dcbot.once('ready', () => {
+	console.log('Connected to Discord!');
+	dcbot.user.setPresence({ activities: [{ name: 'Kellner' }] });
 
 	// Sent Startup/Ready Message to Logging Channel upon Start if not in DEV Environment
 	if(ENV === 'DEV') return;
@@ -90,7 +112,13 @@ bot.once('ready', () => {
 	log(`Ich beginne nun meine Schicht, ${worktodo.random()}`);
 });
 
-bot.on('interactionCreate', async interaction => {
+twitchbot.on('connected', onConnectedHandler);
+function onConnectedHandler (addr, port) {
+	console.log(`Connected to Twitch via ${addr}:${port}!`);
+	log(`Connected to Twitch via ${addr}:${port}`);
+}
+
+dcbot.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
 	// General Logic for commands
 
@@ -150,19 +178,36 @@ bot.on('interactionCreate', async interaction => {
 			);
 		await interaction.reply({ ephemeral: false, embeds: [embed], components: [row], fetchReply: true  });
 	} else if (commandName === 'rules') {
-		const rules = new MessageEmbed()
-			.setColor('#44ff88')
-			.setTitle('Discord Regeln')
-			.setDescription('Bitte lies dir folgende Regeln gründlich durch bevor du sie akzeptierst.')
-			.addFields(
-				{ name: 'Regel 1: Die "Wichtigste" Regel', value: 'Wir sprechen nicht über das Space Pizza Inn. ;)' + NL + 'Gib niemals eine Bestellung ab, die du nicht bezahlen kannst.' + HR},
-				{ name: 'Regel 2: Seid lieb zueinander', value: 'Wir wollen hier keine Hass-/Hetzrede, Rassismus, Sexismus, heftige Beleidigungen oder Spam.' + HR},
-				{ name: 'Regel 3: Wir wollen hier nichts “Anstößiges”', value: 'Keine anstößige Texte oder Bilder bzw. kontroverse Posts, außer sie sind gestattet und dienen in #18 + zur diskussion' + HR},
-				{ name: 'Regel 4: Discord Name = Twitch Name', value: 'Um verwirrung zu Vermeiden, wäre es von Vorteil in Discord den gleichen Namen zu haben, wie auf Twitch. So wissen wir, wer du bist!' + HR},
-				{ name: 'Regel 5: Pizza ist niemals politisch oder extrem', value: 'Jeder hat und darf seine Meinung haben. Aber Pizza diskutiert nicht! Danke!' + HR},
-				{ name: 'Regel 6: SEID LIEB!', value: 'Wer Kloppe anfängt wird ins All geschossen und muss damit leben!' + HR},
-				{ name: 'Regel 7: Lasst ein Trinkgeld für den Klomann da', value: '\u2800'},
-			);
+
+		const ruleheader = 'https://cerbion.net/content/spacepizzainn/DC_rules.png';
+
+		const rule1 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('Regel 1: Die "Wichtigste" Regel')
+		.setDescription('Wir sprechen nicht über das Space Pizza Inn. ;)' + NL + 'Gib niemals eine Bestellung ab, die du nicht bezahlen kannst.');
+		const rule2 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('Regel 2: Seid lieb zueinander')
+		.setDescription('Wir wollen hier keine Hass-/Hetzrede, Rassismus, Sexismus, heftige Beleidigungen oder Spam.');
+		const rule3 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('Regel 3: Wir wollen hier nichts “Anstößiges”')
+		.setDescription('Keine anstößige Texte oder Bilder bzw. kontroverse Posts, außer sie sind gestattet und dienen in <#963060688589312030> zur diskussion.');
+		const rule4 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('Regel 4: Discord Name = Twitch Name')
+		.setDescription('Um verwirrung zu Vermeiden, wäre es von Vorteil in Discord den gleichen Namen zu haben, wie auf Twitch. So wissen wir, wer du bist!');
+		const rule5 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('Regel 5: Pizza ist niemals politisch oder extrem')
+		.setDescription('Jeder hat und darf seine Meinung haben. Aber Pizza diskutiert nicht! Danke!');
+		const rule6 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('Regel 6: SEID LIEB!')
+		.setDescription('Wer Kloppe anfängt wird ins All geschossen und muss damit leben!');
+		const rule7 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('Regel 7: Lasst ein Trinkgeld für den Klomann da');
 		const rulebutton = new MessageEmbed()
 			.setColor('#44ff88')
 			.setTitle('Hast du alle Regeln gelesen, verstanden und akzeptierst diese?');
@@ -175,7 +220,7 @@ bot.on('interactionCreate', async interaction => {
 					.setStyle('SUCCESS')
 					.setEmoji('✔️'),
 			);
-		await interaction.reply({ ephemeral: false, embeds: [rules, rulebutton], components: [row], fetchReply: true  });
+		await interaction.reply({ files: [ruleheader], ephemeral: false, embeds: [rule1, rule2, rule3, rule4, rule5, rule6, rule7, rulebutton], components: [row], fetchReply: true  });
 	} else if (commandName === 'ban') {
 		await interaction.reply(`Bann Funktion in Arbeit.`);
 	} else if (commandName === 'update') {
@@ -203,7 +248,7 @@ bot.on('interactionCreate', async interaction => {
 });
 
 // Button Usage
-bot.on('interactionCreate', async interaction => {
+dcbot.on('interactionCreate', async interaction => {
 	if (!interaction.isButton()) return;
 	const buttonName = interaction.customId;
 	const user = interaction.member;
@@ -294,7 +339,7 @@ bot.on('interactionCreate', async interaction => {
 	}
 });
 
-bot.on('messageDelete', async message => {
+dcbot.on('messageDelete', async message => {
 	var msg = message;
 
 	// Try to fetch full message if only partially received
@@ -314,7 +359,7 @@ bot.on('messageDelete', async message => {
 	}
 
 	// Abort if a Bot message was deleted
-	if(!message.partial && msg.author.id == bot.user.id) return;
+	if(!message.partial && msg.author.id == dcbot.user.id) return;
 
 	console.log('Message has been deleted.');
 	var logtext = "Eine Nachricht wurde gelöscht:";
@@ -360,7 +405,7 @@ bot.on('messageDelete', async message => {
 // 	return;
 // });
 
-bot.on('userUpdate', async (olduser, newuser) => {
+dcbot.on('userUpdate', async (olduser, newuser) => {
 	console.log('User Data changed!');
 	var logtext = "Name von " + newuser.toString() + " wurde geändert:";
 	logtext += "\n\nOriginalname:" + inlineCode(olduser.username);
@@ -368,8 +413,15 @@ bot.on('userUpdate', async (olduser, newuser) => {
 	return;
 });
 
+dcbot.on('guildMemberRemove', async guildmember => {
+	console.log('User left the Server!');
+	var logtext = guildmember.username + guildmember.tag + " hat den Server verlassen oder wurde gekickt.";
+	log(logtext);
+	return;
+});
+
 // Login to Discord with your client's token
-bot.login(TOKEN);
+dcbot.login(TOKEN);
 
 
 
@@ -378,7 +430,7 @@ async function log(_content)
 {
 	// if(ENV === 'DEV') return;
 
-	const channel = bot.channels.cache.get(LOGGING_CHANNEL_ID);
+	const channel = dcbot.channels.cache.get(LOGGING_CHANNEL_ID);
 	channel.send("> " + _content);
     return;
 }
