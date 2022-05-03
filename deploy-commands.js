@@ -15,8 +15,13 @@ const commands = [
 	new SlashCommandBuilder().setName('user').setDescription('Gibt die Userinfo aus.'),
 	new SlashCommandBuilder().setName('roles').setDescription('Generiert die Embed-Nachricht für die Rollenvergabe neu.'),
 	new SlashCommandBuilder().setName('rules').setDescription('Generiert die Embed-Nachricht zum annehmen der Regeln.'),
-	new SlashCommandBuilder().setName('ban').setDescription('Verbannt einen Nutzer aus einer Subcommunity.'),
-	new SlashCommandBuilder().setName('update').setDescription('Reloaded alle variablen des Bots.'),
+	new SlashCommandBuilder().setName('ban').setDescription('Verbannt einen Nutzer aus einer Subcommunity.\n\nNutzung: `/ban @user cerb/thor/nett/pand/lita`'),
+	new SlashCommandBuilder().setName('voiceban').setDescription('Verbannt einen Nutzer aus den Sprachkanälen.\n\nNutzung: `/voiceban @user`'),
+	new SlashCommandBuilder().setName('giveaway').setDescription('Startet ein Giveaway.\n\nNutzung: `/so twitchname`'),
+	new SlashCommandBuilder().setName('poll').setDescription('WIP'),
+	new SlashCommandBuilder().setName('warn').setDescription('Verwarnt einen Nutzer.\n\nNutzung: `/warn @user`'),
+	new SlashCommandBuilder().setName('so').setDescription('Shoutout für einen anderen twitchuser.\n\nNutzung: `/so twitchname`'),
+	new SlashCommandBuilder().setName('update').setDescription('WIP'),
 ]
 	.map(command => command.toJSON());
 
