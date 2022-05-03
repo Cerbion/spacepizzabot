@@ -1,6 +1,6 @@
 // Require the necessary discord.js classes
-const { Client, Intents, MessageActionRow, MessageButton, MessageSelectMenu, MessageEmbed } = require('discord.js');
-const { bold, italic, strikethrough, underscore, spoiler, quote, blockQuote } = require('@discordjs/builders');
+const { Client, Intents, MessageActionRow, MessageButton, MessageSelectMenu, MessageEmbed, ReactionUserManager } = require('discord.js');
+const { bold, italic, strikethrough, underscore, spoiler, quote, blockQuote, codeBlock, inlineCode } = require('@discordjs/builders');
 const dotenv = require('dotenv');
 const tmi = require('tmi.js');
 
@@ -18,13 +18,23 @@ var ROLE_LITA = process.env.ROLE_LITA;
 var ROLE_PAND = process.env.ROLE_PAND;
 var ROLE_VERIFIED = process.env.ROLE_VERIFIED;
 
+// CONFIG
+const NL = "\n";
+
 
 // Create a new client instance
-const bot = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const bot = new Client({
+	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_MESSAGES],
+	partials: ['MESSAGE', 'CHANNEL', 'REACTION']
+});
 
 // When the client is ready, run this code (only once)
 bot.once('ready', () => {
 	console.log('Ready!');
+	bot.user.setPresence({ activities: [{ name: 'Kellner' }] });
+
+	// Sent Startup/Ready Message to Logging Channel upon Start if not in DEV Environment
+	if(ENV === 'DEV') return;
 	const worktodo = [
 		'Tisch 3 sieht ja schrecklich aus! Da fange ich mal besser gleich an.',
 		'da kommt schon der erste Gast, höchste Zeit produktiv zu werden!',
@@ -77,15 +87,16 @@ bot.once('ready', () => {
 		'das Leben.. ehh.. findet einen Weg...  zur Pizza!',
 		'sollten wir eine Selbsthilfegruppe eröffnen? Ihr wisst schon wegen dem Pizzafetisch.'];
 	log(`Ich beginne nun meine Schicht, ${worktodo.random()}`);
-	bot.user.setPresence({ activities: [{ name: 'Kellner' }] });
 });
 
 bot.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
+	// General Logic for commands
 
 	const { commandName } = interaction;
 	log(`${interaction.user.username} hat den Befehl /${commandName} ausgeführt.`);
 
+	// Logic depends on commandName
 	if (commandName === 'ping') {
 		await interaction.reply('Pong!');
 	} else if (commandName === 'server') {
@@ -138,7 +149,8 @@ bot.on('interactionCreate', async interaction => {
 			);
 		await interaction.reply({ ephemeral: false, embeds: [embed], components: [row], fetchReply: true  });
 	} else if (commandName === 'rules') {
-		const embed = new MessageEmbed()
+		const rules = new MessageEmbed();
+		const rulebutton = new MessageEmbed()
 			.setColor('#44ff88')
 			.setTitle('Hast du alle Regeln gelesen, verstanden und akzeptierst diese?');
 
@@ -148,9 +160,9 @@ bot.on('interactionCreate', async interaction => {
 					.setCustomId('rules')
 					.setLabel('Ja, Regeln sind cool.')
 					.setStyle('SUCCESS')
-					.setEmoji('☑️'),
+					.setEmoji('✔️'),
 			);
-		await interaction.reply({ ephemeral: false, embeds: [embed], components: [row], fetchReply: true  });
+		await interaction.reply({ ephemeral: false, embeds: [rules, rulebutton], components: [row], fetchReply: true  });
 	} else if (commandName === 'ban') {
 		await interaction.reply(`Bann Funktion in Arbeit.`);
 	} else if (commandName === 'update') {
@@ -180,10 +192,10 @@ bot.on('interactionCreate', async interaction => {
 // Button Usage
 bot.on('interactionCreate', async interaction => {
 	if (!interaction.isButton()) return;
-
 	const buttonName = interaction.customId;
 	const user = interaction.member;
 
+	// Decide Logic based upon buttonName (unique Id)
 	if (buttonName == 'cerb')
 	{
 		if(user.roles.cache.some(role => role.id === ROLE_CERB))
@@ -254,7 +266,7 @@ bot.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'Du folgst nun Panda!', ephemeral: true });
 			log(`${interaction.user.username} folgt jetzt Panda.`);
 		}
-	}else if (buttonName == 'rules')
+	} else if (buttonName == 'rules')
 	{
 		if(user.roles.cache.some(role => role.id === ROLE_VERIFIED))
 		{
@@ -269,6 +281,80 @@ bot.on('interactionCreate', async interaction => {
 	}
 });
 
+bot.on('messageDelete', async message => {
+	var msg = message;
+
+	// Try to fetch full message if only partially received
+	if(message.partial)
+	{
+		message.fetch()
+			.then(fullMessage => {
+				msg = fullMessage;
+			})
+			.catch(error => {
+				// Nothing
+			});
+		if(msg.content == null)
+		{
+			msg.content = '- nicht mehr verfügbar -';
+		}
+	}
+
+	// Abort if a Bot message was deleted
+	if(!message.partial && msg.author.id == bot.user.id) return;
+
+	console.log('Message has been deleted.');
+	var logtext = "Eine Nachricht wurde gelöscht:";
+	logtext += "\n\nGelöschte Nachricht:\n" + codeBlock(msg.content);
+	log(logtext);
+	return;
+});
+
+// bot.on('messageUpdate', async (oldmsg, newmsg) => {
+// 	var msgOld = oldmsg;
+// 	var msgNew = newmsg;
+
+// 	// Try to fetch full message if only partially received
+// 	if(oldmsg.partial)
+// 	{
+// 		oldmsg.fetch()
+// 			.then((fullMessage) => {
+// 				msgOld = fullMessage;
+// 			})
+// 			.catch(error => {
+// 				// Nothing
+// 			});
+// 	}
+// 	if(newmsg.partial)
+// 	{
+// 		newmsg.fetch()
+// 			.then((fullMessage) => {
+// 				msgNew = fullMessage;
+// 			})
+// 			.catch(error => {
+// 				// Nothing
+// 			});
+// 	}
+
+// 	// Abort if the message has not actually changed content
+// 	if(msgOld.content == msgNew.content) return;
+
+// 	console.log('Message has been changed.');
+// 	var logtext = "Eine Nachricht wurde editiert:";
+// 	logtext += "\n\nAlt:\n" + codeBlock(msgOld.content);
+// 	logtext += "\n\nNeu:\n" + codeBlock(msgNew.content);
+// 	log(logtext);
+// 	return;
+// });
+
+bot.on('userUpdate', async (olduser, newuser) => {
+	console.log('User Data changed!');
+	var logtext = "Name von " + newuser.toString() + " wurde geändert:";
+	logtext += "\n\nOriginalname:" + inlineCode(olduser.username);
+	log(logtext);
+	return;
+});
+
 // Login to Discord with your client's token
 bot.login(TOKEN);
 
@@ -277,7 +363,7 @@ bot.login(TOKEN);
 /// FUNCTIONS ///
 async function log(_content)
 {
-	if(ENV === 'DEV') return;
+	// if(ENV === 'DEV') return;
 
 	const channel = bot.channels.cache.get(LOGGING_CHANNEL_ID);
 	channel.send("> " + _content);
