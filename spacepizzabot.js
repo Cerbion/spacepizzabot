@@ -9,8 +9,7 @@ dotenv.config();
 const ENV = process.env.ENV;
 const TOKEN = process.env.TOKEN;
 const USERNAME = process.env.USERNAME;
-const SECRET = process.env.SECRET;
-const TWITCHID = process.env.TWITCHID;
+const OAUTH = process.env.OAUTH;
 var GUILDID = process.env.GUILDID;
 var CLIENTID = process.env.CLIENTID;
 var LOGGING_CHANNEL_ID = process.env.LOGGING_CHANNEL_ID;
@@ -36,7 +35,7 @@ const dcbot = new Client({
 const opts = {
     identity: {
         username: USERNAME,
-        password: 'oauth:' + SECRET
+        password: OAUTH
     },
         channels: [
 		'cerbion',
@@ -44,9 +43,6 @@ const opts = {
 		'nettgemeint',
 		'litanoela',
 		'dapandaraw' ],
-    options: {
-        clientID: TWITCHID
-    }
 };
 const twitchbot = new tmi.Client(opts);
 twitchbot.connect();
