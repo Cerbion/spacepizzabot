@@ -1,8 +1,15 @@
 // Require the necessary discord.js classes
-const { Client, Intents, MessageActionRow, MessageButton, MessageSelectMenu, MessageEmbed, ReactionUserManager } = require('discord.js');
+const { Client, Intents, MessageActionRow, MessageButton, MessageSelectMenu, MessageEmbed } = require('discord.js');
 const { bold, italic, strikethrough, underscore, spoiler, quote, blockQuote, codeBlock, inlineCode } = require('@discordjs/builders');
 const dotenv = require('dotenv');
 const tmi = require('tmi.js');
+// const TwitchApi = require("node-twitch").default;
+const crypto = require('crypto')
+const express = require('express');
+
+//////////////////////////////////////////////////////////////////////////////
+// REMOVE NODE-TWITCH!!!
+//////////////////////////////////////////////////////////////////////////////
 
 // Read out ENV values
 dotenv.config();
@@ -10,6 +17,10 @@ const ENV = process.env.ENV;
 const TOKEN = process.env.TOKEN;
 const USERNAME = process.env.USERNAME;
 const OAUTH = process.env.OAUTH;
+const TWITCH_CLIENTID = process.env.TWITCH_CLIENTID;
+const TWITCH_SECRET = process.env.TWITCH_SECRET;
+const TWITCH_ACCESS = process.env.TWITCH_ACCESS;
+const TWITCH_PASS = process.env.TWITCH_PASS;
 var GUILDID = process.env.GUILDID;
 var CLIENTID = process.env.CLIENTID;
 var LOGGING_CHANNEL_ID = process.env.LOGGING_CHANNEL_ID;
@@ -21,36 +32,41 @@ var ROLE_PAND = process.env.ROLE_PAND;
 var ROLE_VERIFIED = process.env.ROLE_VERIFIED;
 
 // CONFIG
+const allchannels = ['cerbion','thorstenselbst','nettgemeint','litanoela','dapandaraw'];
+const id_cerb = 38371604;
+const id_thor = 715781187;
+const id_nett = 83826505;
+const id_lita = 610059339;
+const id_pand = 131797761;
 const NL = "\n";
 const HR = "\n────────────────────────\n";
 
 
+// // Setup Express
+const app = express();
+const port = 8080;
+
 // Create a new discord client instance
-const dcbot = new Client({
+const discordClient = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_MESSAGES],
 	partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 });
 
-// Create a new twitch client instance
+// Create a new tmi client instance
 const opts = {
     identity: {
         username: USERNAME,
         password: OAUTH
     },
-        channels: [
-		'cerbion',
-		'thorstenselbst',
-		'nettgemeint',
-		'litanoela',
-		'dapandaraw' ],
+        channels: allchannels,
 };
-const twitchbot = new tmi.Client(opts);
-twitchbot.connect();
+const tmiClient = new tmi.Client(opts);
+tmiClient.connect();
 
 // When the client is ready, run this code (only once)
-dcbot.once('ready', () => {
+discordClient.once('ready', () => {
 	console.log('Connected to Discord!');
-	dcbot.user.setPresence({ activities: [{ name: 'Kellner' }] });
+	discordClient.user.setPresence({ activities: [{ name: 'Kellner' }] });
 
 	// Sent Startup/Ready Message to Logging Channel upon Start if not in DEV Environment
 	if(ENV === 'DEV') return;
@@ -108,13 +124,16 @@ dcbot.once('ready', () => {
 	log(`Ich beginne nun meine Schicht, ${worktodo.random()}`);
 });
 
-twitchbot.on('connected', onConnectedHandler);
+tmiClient.on('connected', onConnectedHandler);
 function onConnectedHandler (addr, port) {
+
+	if(ENV === 'DEV') return;
 	console.log(`Connected to Twitch via ${addr}:${port}!`);
 	log(`Connected to Twitch via ${addr}:${port}`);
 }
 
-dcbot.on('interactionCreate', async interaction => {
+
+discordClient.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
 	// General Logic for commands
 
@@ -244,7 +263,7 @@ dcbot.on('interactionCreate', async interaction => {
 });
 
 // Button Usage
-dcbot.on('interactionCreate', async interaction => {
+discordClient.on('interactionCreate', async interaction => {
 	if (!interaction.isButton()) return;
 	const buttonName = interaction.customId;
 	const user = interaction.member;
@@ -335,7 +354,7 @@ dcbot.on('interactionCreate', async interaction => {
 	}
 });
 
-dcbot.on('messageDelete', async message => {
+discordClient.on('messageDelete', async message => {
 	var msg = message;
 
 	// Try to fetch full message if only partially received
@@ -355,7 +374,7 @@ dcbot.on('messageDelete', async message => {
 	}
 
 	// Abort if a Bot message was deleted
-	if(!message.partial && msg.author.id == dcbot.user.id) return;
+	if(!message.partial && msg.author.id == discordClient.user.id) return;
 
 	console.log('Message has been deleted.');
 	var logtext = "Eine Nachricht wurde gelöscht:";
@@ -364,44 +383,7 @@ dcbot.on('messageDelete', async message => {
 	return;
 });
 
-// bot.on('messageUpdate', async (oldmsg, newmsg) => {
-// 	var msgOld = oldmsg;
-// 	var msgNew = newmsg;
-
-// 	// Try to fetch full message if only partially received
-// 	if(oldmsg.partial)
-// 	{
-// 		oldmsg.fetch()
-// 			.then((fullMessage) => {
-// 				msgOld = fullMessage;
-// 			})
-// 			.catch(error => {
-// 				// Nothing
-// 			});
-// 	}
-// 	if(newmsg.partial)
-// 	{
-// 		newmsg.fetch()
-// 			.then((fullMessage) => {
-// 				msgNew = fullMessage;
-// 			})
-// 			.catch(error => {
-// 				// Nothing
-// 			});
-// 	}
-
-// 	// Abort if the message has not actually changed content
-// 	if(msgOld.content == msgNew.content) return;
-
-// 	console.log('Message has been changed.');
-// 	var logtext = "Eine Nachricht wurde editiert:";
-// 	logtext += "\n\nAlt:\n" + codeBlock(msgOld.content);
-// 	logtext += "\n\nNeu:\n" + codeBlock(msgNew.content);
-// 	log(logtext);
-// 	return;
-// });
-
-dcbot.on('userUpdate', async (olduser, newuser) => {
+discordClient.on('userUpdate', async (olduser, newuser) => {
 	console.log('User Data changed!');
 	var logtext = "Name von " + newuser.toString() + " wurde geändert:";
 	logtext += "\n\nOriginalname:" + inlineCode(olduser.username);
@@ -409,7 +391,7 @@ dcbot.on('userUpdate', async (olduser, newuser) => {
 	return;
 });
 
-dcbot.on('guildMemberRemove', async guildmember => {
+discordClient.on('guildMemberRemove', async guildmember => {
 	console.log('User left the Server!');
 	var logtext = guildmember.username + guildmember.tag + " hat den Server verlassen oder wurde gekickt.";
 	log(logtext);
@@ -417,20 +399,123 @@ dcbot.on('guildMemberRemove', async guildmember => {
 });
 
 // Login to Discord with your client's token
-dcbot.login(TOKEN);
+discordClient.login(TOKEN);
 
+
+// // Fetch Twitch Stream
+// async function getStream(_channel) {
+//   const streams = await twitch.getStreams({ channel: _channel });
+//   console.log(streams);
+// }
+
+// // Fetch Twitch User
+// async function getUser(_user) {
+// 	const user = await twitch.getUser({ name: _user });
+// 	console.log(user);
+// }
+
+// getUser("Cerbion");
 
 
 /// FUNCTIONS ///
 async function log(_content)
 {
-	// if(ENV === 'DEV') return;
+	if(ENV === 'DEV') return;
 
-	const channel = dcbot.channels.cache.get(LOGGING_CHANNEL_ID);
+	const channel = discordClient.channels.cache.get(LOGGING_CHANNEL_ID);
 	channel.send("> " + _content);
     return;
 }
 
 Array.prototype.random = function(){
   return this[Math.floor(Math.random()*this.length)];
+}
+
+// Notification request headers
+const TWITCH_MESSAGE_ID = 'Twitch-Eventsub-Message-Id'.toLowerCase();
+const TWITCH_MESSAGE_TIMESTAMP = 'Twitch-Eventsub-Message-Timestamp'.toLowerCase();
+const TWITCH_MESSAGE_SIGNATURE = 'Twitch-Eventsub-Message-Signature'.toLowerCase();
+const MESSAGE_TYPE = 'Twitch-Eventsub-Message-Type'.toLowerCase();
+
+// Notification message types
+const MESSAGE_TYPE_VERIFICATION = 'webhook_callback_verification';
+const MESSAGE_TYPE_NOTIFICATION = 'notification';
+const MESSAGE_TYPE_REVOCATION = 'revocation';
+
+// Prepend this string to the HMAC that's created from the message
+const HMAC_PREFIX = 'sha256=';
+
+app.use(express.raw({          // Need raw message body for signature verification
+    type: 'application/json'
+}))
+
+
+app.post('/eventsub', (req, res) => {
+    let secret = getSecret();
+    let message = getHmacMessage(req);
+    let hmac = HMAC_PREFIX + getHmac(secret, message);  // Signature to compare
+
+    if (true === verifyMessage(hmac, req.headers[TWITCH_MESSAGE_SIGNATURE])) {
+        console.log("signatures match");
+
+        // Get JSON object from body, so you can process the message.
+        let notification = JSON.parse(req.body);
+
+        if (MESSAGE_TYPE_NOTIFICATION === req.headers[MESSAGE_TYPE]) {
+            // TODO: Do something with the event's data.
+
+            console.log(`Event type: ${notification.subscription.type}`);
+            log(`Event ausgelöst! Typ: ${notification.subscription.type}`);
+            console.log(JSON.stringify(notification.event, null, 4));
+
+            res.sendStatus(204);
+        }
+        else if (MESSAGE_TYPE_VERIFICATION === req.headers[MESSAGE_TYPE]) {
+            res.status(200).send(notification.challenge);
+        }
+        else if (MESSAGE_TYPE_REVOCATION === req.headers[MESSAGE_TYPE]) {
+            res.sendStatus(204);
+
+            console.log(`${notification.subscription.type} notifications revoked!`);
+            console.log(`reason: ${notification.subscription.status}`);
+            console.log(`condition: ${JSON.stringify(notification.subscription.condition, null, 4)}`);
+        }
+        else {
+            res.sendStatus(204);
+            console.log(`Unknown message type: ${req.headers[MESSAGE_TYPE]}`);
+        }
+    }
+    else {
+        console.log('403');    // Signatures didn't match.
+        res.sendStatus(403);
+    }
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+  log(`Twitch API verbunden, Port:${port}`);
+})
+
+
+function getSecret() {
+    return TWITCH_SECRET;
+}
+
+// Build the message used to get the HMAC.
+function getHmacMessage(request) {
+    return (request.headers[TWITCH_MESSAGE_ID] +
+        request.headers[TWITCH_MESSAGE_TIMESTAMP] +
+        request.body);
+}
+
+// Get the HMAC.
+function getHmac(secret, message) {
+    return crypto.createHmac('sha256', secret)
+    .update(message)
+    .digest('hex');
+}
+
+// Verify whether our hash matches the hash that Twitch passed in the header.
+function verifyMessage(hmac, verifySignature) {
+    return crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(verifySignature));
 }
