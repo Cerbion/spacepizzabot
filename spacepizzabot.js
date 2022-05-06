@@ -544,3 +544,10 @@ function getHmac(secret, message) {
 function verifyMessage(hmac, verifySignature) {
     return crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(verifySignature));
 }
+
+exports.handler = async () => {
+	return {
+		statusCode: 200,
+		body: 'ok',
+	};
+};
