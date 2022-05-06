@@ -1,1 +1,1 @@
-worker: node spacepizzabot.js
+web: node spacepizzabot.js
