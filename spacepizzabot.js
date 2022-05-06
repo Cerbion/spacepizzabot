@@ -13,6 +13,7 @@ const express = require('express');
 
 // Read out ENV values
 dotenv.config();
+const PORT = process.env.PORT || 8080;
 const ENV = process.env.ENV;
 const TOKEN = process.env.TOKEN;
 const USERNAME = process.env.USERNAME;
@@ -44,7 +45,6 @@ const HR = "\n──────────────────────
 
 // // Setup Express
 const app = express();
-const port = 8080;
 
 // Create a new discord client instance
 const discordClient = new Client({
@@ -498,9 +498,9 @@ app.post('/eventsub', (req, res) => {
     }
 })
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-  log(`Twitch API verbunden, Port:${port}`);
+app.listen(PORT, () => {
+  console.log(`Example app listening at https://spacepizzabot.herokuapp.com:${PORT}`);
+  log(`Twitch API verbunden, Port:${PORT}`);
 })
 
 
