@@ -423,7 +423,14 @@ async function log(_content)
 	if(ENV === 'DEV') return;
 
 	const channel = discordClient.channels.cache.get(LOGGING_CHANNEL_ID);
-	channel.send("> " + _content);
+	try
+	{
+		channel.send("> " + _content);
+	}
+	catch(e)
+	{
+		console.log(e);
+	}
     return;
 }
 
