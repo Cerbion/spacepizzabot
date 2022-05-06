@@ -508,7 +508,25 @@ app.post('/eventsub', (req, res) => {
         console.log('403');    // Signatures didn't match.
         res.sendStatus(403);
     }
-})
+});
+
+app.post("/webhooks/callback", async (req, res) => {
+  const messageType = req.header(MESSAGE_TYPE);
+  if (messageType === MESSAGE_TYPE_VERIFICATION) {
+    console.log("Verifying Webhook");
+    return res.status(200).send(req.body.challenge);
+  }
+
+  const { type } = req.body.subscription;
+  const { event } = req.body;
+
+  console.log(
+    `Receiving ${type} request for ${event.broadcaster_user_name}: `,
+    event
+  );
+
+  res.status(200).end();
+});
 
 function startTwitchServies()
 {
