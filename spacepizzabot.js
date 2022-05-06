@@ -61,12 +61,12 @@ const opts = {
         channels: allchannels,
 };
 const tmiClient = new tmi.Client(opts);
-tmiClient.connect();
 
 // When the client is ready, run this code (only once)
 discordClient.once('ready', () => {
 	console.log('Connected to Discord!');
 	discordClient.user.setPresence({ activities: [{ name: 'Kellner' }] });
+
 
 	// Sent Startup/Ready Message to Logging Channel upon Start if not in DEV Environment
 	if(ENV === 'DEV') return;
@@ -122,6 +122,9 @@ discordClient.once('ready', () => {
 		'das Leben.. ehh.. findet einen Weg...  zur Pizza!',
 		'sollten wir eine Selbsthilfegruppe eröffnen? Ihr wisst schon wegen dem Pizzafetisch.'];
 	log(`Ich beginne nun meine Schicht, ${worktodo.random()}`);
+
+	// Let Twitch services start
+	startTwitchServies();
 });
 
 tmiClient.on('connected', onConnectedHandler);
@@ -476,6 +479,15 @@ app.post('/eventsub', (req, res) => {
             console.log(JSON.stringify(notification.event, null, 4));
 
             res.sendStatus(204);
+
+			if (notification.subscription.type == 'stream.online')
+			{
+				// switch(notification.subscription.)
+				log(`Ich glaube... ${notification.subscription.broadcaster_user_name} ist Live!`);
+			}
+
+
+
         }
         else if (MESSAGE_TYPE_VERIFICATION === req.headers[MESSAGE_TYPE]) {
             res.status(200).send(notification.challenge);
@@ -498,10 +510,16 @@ app.post('/eventsub', (req, res) => {
     }
 })
 
-app.listen(PORT, () => {
-  console.log(`Example app listening at https://spacepizzabot.herokuapp.com:${PORT}`);
-  log(`Twitch API verbunden, Port:${PORT}`);
-})
+function startTwitchServies()
+{
+	app.listen(PORT, () => {
+	console.log(`Example app listening at https://spacepizzabot.herokuapp.com:${PORT}`);
+	log(`Twitch API verbunden, Port:${PORT}`);
+	});
+
+
+	tmiClient.connect();
+}
 
 
 function getSecret() {
