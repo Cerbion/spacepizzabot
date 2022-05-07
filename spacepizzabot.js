@@ -541,7 +541,7 @@ function startTwitchServies()
 
 
 function getSecret() {
-    return TWITCH_SECRET;
+    return "eldenstarnewgameminus";
 }
 
 // Build the message used to get the HMAC.
