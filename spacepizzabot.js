@@ -266,11 +266,11 @@ discordClient.on('interactionCreate', async interaction => {
 		.setDescription('A: Kein Thema! Hier bei der Rollenvergabe kannst du genau den Streamer(n) folgen für die du dich interessierst, klicke auf die Buttons um zu folgen oder entfolgen.');
 		const section3 = new MessageEmbed()
 		.setColor('#44ff88')
-		.setTitle('F: Wie qualifiziere ich mich für den <#963060688589312030> Kanal?')
+		.setTitle('F: Wie qualifiziere ich mich für den 18+ Kanal?')
 		.setDescription('A: Frage <@&956168982476501013> oder einen <@&956168339426791444>!');
 		const section4 = new MessageEmbed()
 		.setColor('#44ff88')
-		.setTitle('F: Wie bekomme ich die <@&963040670791139398>-Rolle?')
+		.setTitle('F: Wie bekomme ich die “Streamer”-Rolle?')
 		.setDescription('A: Diese wird ausschließlich von den <@&956168339426791444> verteilt.');
 		const section5 = new MessageEmbed()
 		.setColor('#44ff88')
