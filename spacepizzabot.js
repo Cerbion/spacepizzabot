@@ -35,10 +35,6 @@ const id_pand = 131797761;
 const NL = "\n";
 const HR = "\n────────────────────────\n";
 
-
-// // Setup Express
-const app = express();
-
 // Create a new discord client instance
 const discordClient = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_MESSAGES],
