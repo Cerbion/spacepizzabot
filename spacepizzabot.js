@@ -3,13 +3,6 @@ const { Client, Intents, MessageActionRow, MessageButton, MessageSelectMenu, Mes
 const { bold, italic, strikethrough, underscore, spoiler, quote, blockQuote, codeBlock, inlineCode } = require('@discordjs/builders');
 const dotenv = require('dotenv');
 const tmi = require('tmi.js');
-// const TwitchApi = require("node-twitch").default;
-const crypto = require('crypto')
-const express = require('express');
-
-//////////////////////////////////////////////////////////////////////////////
-// REMOVE NODE-TWITCH!!!
-//////////////////////////////////////////////////////////////////////////////
 
 // Read out ENV values
 dotenv.config();
@@ -124,7 +117,7 @@ discordClient.once('ready', () => {
 	log(`Ich beginne nun meine Schicht, ${worktodo.random()}`);
 
 	// Let Twitch services start
-	startTwitchServies();
+	tmiClient.connect();
 });
 
 tmiClient.on('connected', onConnectedHandler);
@@ -132,7 +125,7 @@ function onConnectedHandler (addr, port) {
 
 	if(ENV === 'DEV') return;
 	console.log(`Connected to Twitch via ${addr}:${port}!`);
-	log(`Connected to Twitch via ${addr}:${port}`);
+	log(`Verbunden mit Twitch Chat via ${addr}:${port}`);
 }
 
 
@@ -404,22 +397,6 @@ discordClient.on('guildMemberRemove', async guildmember => {
 // Login to Discord with your client's token
 discordClient.login(TOKEN);
 
-
-// // Fetch Twitch Stream
-// async function getStream(_channel) {
-//   const streams = await twitch.getStreams({ channel: _channel });
-//   console.log(streams);
-// }
-
-// // Fetch Twitch User
-// async function getUser(_user) {
-// 	const user = await twitch.getUser({ name: _user });
-// 	console.log(user);
-// }
-
-// getUser("Cerbion");
-
-
 /// FUNCTIONS ///
 async function log(_content)
 {
@@ -440,132 +417,3 @@ async function log(_content)
 Array.prototype.random = function(){
   return this[Math.floor(Math.random()*this.length)];
 }
-
-// Notification request headers
-const TWITCH_MESSAGE_ID = 'Twitch-Eventsub-Message-Id'.toLowerCase();
-const TWITCH_MESSAGE_TIMESTAMP = 'Twitch-Eventsub-Message-Timestamp'.toLowerCase();
-const TWITCH_MESSAGE_SIGNATURE = 'Twitch-Eventsub-Message-Signature'.toLowerCase();
-const MESSAGE_TYPE = 'Twitch-Eventsub-Message-Type'.toLowerCase();
-
-// Notification message types
-const MESSAGE_TYPE_VERIFICATION = 'webhook_callback_verification';
-const MESSAGE_TYPE_NOTIFICATION = 'notification';
-const MESSAGE_TYPE_REVOCATION = 'revocation';
-
-// Prepend this string to the HMAC that's created from the message
-const HMAC_PREFIX = 'sha256=';
-
-app.use(express.raw({          // Need raw message body for signature verification
-    type: 'application/json'
-}))
-
-
-app.post('/eventsub', (req, res) => {
-    let secret = getSecret();
-    let message = getHmacMessage(req);
-    let hmac = HMAC_PREFIX + getHmac(secret, message);  // Signature to compare
-
-    if (true === verifyMessage(hmac, req.headers[TWITCH_MESSAGE_SIGNATURE])) {
-        console.log("signatures match");
-
-        // Get JSON object from body, so you can process the message.
-        let notification = JSON.parse(req.body);
-
-        if (MESSAGE_TYPE_NOTIFICATION === req.headers[MESSAGE_TYPE]) {
-            // TODO: Do something with the event's data.
-
-            console.log(`Event type: ${notification.subscription.type}`);
-            log(`Event ausgelöst! Typ: ${notification.subscription.type}`);
-            console.log(JSON.stringify(notification.event, null, 4));
-
-            res.sendStatus(204);
-
-			if (notification.subscription.type == 'stream.online')
-			{
-				// switch(notification.subscription.)
-				log(`Ich glaube... ${notification.subscription.broadcaster_user_name} ist Live!`);
-			}
-
-
-
-        }
-        else if (MESSAGE_TYPE_VERIFICATION === req.headers[MESSAGE_TYPE]) {
-            res.status(200).send(notification.challenge);
-        }
-        else if (MESSAGE_TYPE_REVOCATION === req.headers[MESSAGE_TYPE]) {
-            res.sendStatus(204);
-
-            console.log(`${notification.subscription.type} notifications revoked!`);
-            console.log(`reason: ${notification.subscription.status}`);
-            console.log(`condition: ${JSON.stringify(notification.subscription.condition, null, 4)}`);
-        }
-        else {
-            res.sendStatus(204);
-            console.log(`Unknown message type: ${req.headers[MESSAGE_TYPE]}`);
-        }
-    }
-    else {
-        console.log('403');    // Signatures didn't match.
-        res.sendStatus(403);
-    }
-});
-
-app.post("/webhooks/callback", async (req, res) => {
-  const messageType = req.header(MESSAGE_TYPE);
-  if (messageType === MESSAGE_TYPE_VERIFICATION) {
-    console.log("Verifying Webhook");
-    return res.status(200).send(req.body.challenge);
-  }
-
-  const { type } = req.body.subscription;
-  const { event } = req.body;
-
-  console.log(
-    `Receiving ${type} request for ${event.broadcaster_user_name}: `,
-    event
-  );
-
-  res.status(200).end();
-});
-
-function startTwitchServies()
-{
-	app.listen(PORT, () => {
-	console.log(`Example app listening at https://spacepizzabot.herokuapp.com:${PORT}`);
-	log(`Twitch API verbunden, Port:${PORT}`);
-	});
-
-
-	tmiClient.connect();
-}
-
-
-function getSecret() {
-    return "eldenstarnewgameminus";
-}
-
-// Build the message used to get the HMAC.
-function getHmacMessage(request) {
-    return (request.headers[TWITCH_MESSAGE_ID] +
-        request.headers[TWITCH_MESSAGE_TIMESTAMP] +
-        request.body);
-}
-
-// Get the HMAC.
-function getHmac(secret, message) {
-    return crypto.createHmac('sha256', secret)
-    .update(message)
-    .digest('hex');
-}
-
-// Verify whether our hash matches the hash that Twitch passed in the header.
-function verifyMessage(hmac, verifySignature) {
-    return crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(verifySignature));
-}
-
-exports.handler = async () => {
-	return {
-		statusCode: 200,
-		body: 'ok',
-	};
-};
