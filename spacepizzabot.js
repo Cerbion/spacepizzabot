@@ -140,6 +140,9 @@ discordClient.on('interactionCreate', async interaction => {
 	} else if (commandName === 'user') {
 		await interaction.reply(`User-tag: ${interaction.user.tag}\nUser-id: ${interaction.user.id}`);
 	} else if (commandName === 'roles') {
+
+		const banner = 'https://cerbion.net/content/spacepizzainn/DC_welcome.png';
+
 		const embed = new MessageEmbed()
 			.setColor('#44ff88')
 			.setTitle('🍕 Mit wem möchtest du Pizza essen?')
@@ -183,10 +186,10 @@ discordClient.on('interactionCreate', async interaction => {
 					.setStyle('SUCCESS')
 					.setEmoji('🦊'),
 			);
-		await interaction.reply({ ephemeral: false, embeds: [embed], components: [row], fetchReply: true  });
+		await interaction.reply({ files: [banner], ephemeral: false, embeds: [embed], components: [row], fetchReply: true  });
 	} else if (commandName === 'rules') {
 
-		const ruleheader = 'https://cerbion.net/content/spacepizzainn/DC_rules.png';
+		const banner = 'https://cerbion.net/content/spacepizzainn/DC_rules.png';
 
 		const rule1 = new MessageEmbed()
 		.setColor('#44ff88')
@@ -227,7 +230,54 @@ discordClient.on('interactionCreate', async interaction => {
 					.setStyle('SUCCESS')
 					.setEmoji('✔️'),
 			);
-		await interaction.reply({ files: [ruleheader], ephemeral: false, embeds: [rule1, rule2, rule3, rule4, rule5, rule6, rule7, rulebutton], components: [row], fetchReply: true  });
+		await interaction.reply({ files: [banner], ephemeral: false, embeds: [rule1, rule2, rule3, rule4, rule5, rule6, rule7, rulebutton], components: [row], fetchReply: true  });
+	} else if (commandName === 'streamplan') {
+
+		const banner = 'https://cerbion.net/content/spacepizzainn/DC_Plan2.png';
+
+		const section1 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('Streamplan')
+		.setImage('https://cerbion.net/content/spacepizzainn/SpacePizzaInnSpinning.gif')
+		.setDescription('Gemeinsamer Streamplan von nettgemeint, Panda, Thorsten, Lita und Cerbion.')
+			.addFields(
+				{ name: 'ACHTUNG', value: 'Sowohl Lita als auch Thorsten müssen aktuell wegen der Arbeit noch sehen wann genau das Streaming stattfinden wird, Streams werden vorerst relativ spontan für die beiden sein!' },
+				{ name: 'MONTAG', value: 'Cerbion • Ab 17 Uhr' },
+				{ name: 'DIENSTAG', value: 'ggf. Thorsten • Ab ~19-20 Uhr' },
+				{ name: 'MITTWOCH', value: 'Cerbion • Ab 17 Uhr' },
+				{ name: 'DONNERSTAG', value: 'ggf. Thorsten • Ab ~19-20 Uhr' },
+				{ name: 'FREITAG', value: 'Cerbion • Ab 17 Uhr' + NL + 'nettgemeint • Ab 21 Uhr' },
+				{ name: 'SAMSTAG', value: 'Cerbion • Ab 16 Uhr' },
+				{ name: 'SONNTAG', value: 'nettgemeint • Ab 9 Uhr' + NL + 'Panda • Ab 15 Uhr' },
+			);
+
+		await interaction.reply({ files: [banner], ephemeral: false, embeds: [section1]  });
+	} else if (commandName === 'faq') {
+
+		const banner = 'https://cerbion.net/content/spacepizzainn/DC_FAQ1.png';
+
+		const section1 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('F: Was ist das hier?')
+		.setDescription('A: Der Community Discord Server von den Streamern: LitaNoela, THORSTENselbst, DaPandaRaw, nettgemeint und Cerbion!');
+		const section2 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('F: Ich interessiere mich nicht für alle Streamer, was nun?')
+		.setDescription('A: Kein Thema! Hier bei der Rollenvergabe kannst du genau den Streamer(n) folgen für die du dich interessierst, klicke auf die Buttons um zu folgen oder entfolgen.');
+		const section3 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('F: Wie qualifiziere ich mich für den <#963060688589312030> Kanal?')
+		.setDescription('A: Frage <@&956168982476501013> oder einen <@&956168339426791444>!');
+		const section4 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('F: Wie bekomme ich die <@&963040670791139398>-Rolle?')
+		.setDescription('A: Diese wird ausschließlich von den <@&956168339426791444> verteilt.');
+		const section5 = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('F: Ich brauche Hilfe/Irgendwas funktioniert nicht!')
+		.setDescription('A: Wenn der Bot mal nicht funktioniert oder etwas anderes nicht in Ordnung ist melde dich bitte bei einem <@&956168982476501013> oder <@&956168339426791444>.');
+
+		await interaction.reply({ files: [banner], ephemeral: false, embeds: [section1, section2, section3, section4, section5]  });
 	} else if (commandName === 'ban') {
 		await interaction.reply(`Bann Funktion in Arbeit.`);
 	} else if (commandName === 'update') {
