@@ -15,6 +15,8 @@ const commands = [
 	new SlashCommandBuilder().setName('user').setDescription('Gibt die Userinfo aus.'),
 	new SlashCommandBuilder().setName('roles').setDescription('Generiert die Embed-Nachricht für die Rollenvergabe neu.'),
 	new SlashCommandBuilder().setName('rules').setDescription('Generiert die Embed-Nachricht zum annehmen der Regeln.'),
+	new SlashCommandBuilder().setName('streamplan').setDescription('Generiert die Embed-Nachricht für den Streamplan neu.'),
+	new SlashCommandBuilder().setName('faq').setDescription('Generiert die Embed-Nachricht für die häufig gestellten Fragen neu.'),
 	new SlashCommandBuilder().setName('ban').setDescription('Verbannt einen Nutzer aus einer Subcommunity.\n\nNutzung: `/ban @user cerb/thor/nett/pand/lita`'),
 	new SlashCommandBuilder().setName('voiceban').setDescription('Verbannt einen Nutzer aus den Sprachkanälen.\n\nNutzung: `/voiceban @user`'),
 	new SlashCommandBuilder().setName('giveaway').setDescription('Startet ein Giveaway.\n\nNutzung: `/so twitchname`'),
