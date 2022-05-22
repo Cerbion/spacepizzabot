@@ -24,6 +24,18 @@ const commands = [
 	new SlashCommandBuilder().setName('warn').setDescription('Verwarnt einen Nutzer.\n\nNutzung: `/warn @user`'),
 	new SlashCommandBuilder().setName('so').setDescription('Shoutout für einen anderen twitchuser.\n\nNutzung: `/so twitchname`'),
 	new SlashCommandBuilder().setName('update').setDescription('WIP'),
+
+	new SlashCommandBuilder()
+		.setName('dbtest')
+		.setDescription('tests entry into database')
+		.addStringOption(option =>
+			option.setName('name')
+				.setDescription('tag name')
+				.setRequired(true))
+		.addStringOption(option =>
+			option.setName('description')
+				.setDescription('tag description')
+				.setRequired(true)),
 ]
 	.map(command => command.toJSON());
 

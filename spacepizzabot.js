@@ -3,6 +3,7 @@ const { Client, Intents, MessageActionRow, MessageButton, MessageSelectMenu, Mes
 const { bold, italic, strikethrough, underscore, spoiler, quote, blockQuote, codeBlock, inlineCode } = require('@discordjs/builders');
 const dotenv = require('dotenv');
 const tmi = require('tmi.js');
+const Sequelize = require('sequelize');
 
 // Read out ENV values
 dotenv.config();
@@ -15,6 +16,10 @@ const TWITCH_CLIENTID = process.env.TWITCH_CLIENTID;
 const TWITCH_SECRET = process.env.TWITCH_SECRET;
 const TWITCH_ACCESS = process.env.TWITCH_ACCESS;
 const TWITCH_PASS = process.env.TWITCH_PASS;
+const DB_NAME = process.env.DB_NAME;
+const DB_HOST = process.env.DB_HOST;
+const DB_USER = process.env.DB_USER;
+const DB_PASS = process.env.DB_PASS;
 var GUILDID = process.env.GUILDID;
 var CLIENTID = process.env.CLIENTID;
 var LOGGING_CHANNEL_ID = process.env.LOGGING_CHANNEL_ID;
@@ -35,6 +40,41 @@ const id_pand = 131797761;
 const NL = "\n";
 const HR = "\n────────────────────────\n";
 
+// Initialize DB
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
+	host: DB_HOST,
+	dialect: 'mysql',
+	logging: false,
+	// SQLite only
+	// storage: 'database.sql',
+});
+/*
+ * equivalent to: CREATE TABLE tags(
+ * name VARCHAR(255) UNIQUE,
+ * description TEXT,
+ * username VARCHAR(255),
+ * usage_count  INT NOT NULL DEFAULT 0
+ * );
+ */
+const Stats = sequelize.define('stats', {
+	userid: {
+		type: Sequelize.STRING,
+		unique: true,
+	},
+	messages: {
+		type: Sequelize.INTEGER,
+		defaultValue: 0,
+		allowNull: false,
+	},
+	characters: {
+		type: Sequelize.INTEGER,
+		defaultValue: 0,
+		allowNull: false,
+	},
+	jointime: Sequelize.DATE,
+});
+
+
 // Create a new discord client instance
 const discordClient = new Client({
 	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_MESSAGES],
@@ -53,6 +93,9 @@ const tmiClient = new tmi.Client(opts);
 
 // When the client is ready, run this code (only once)
 discordClient.once('ready', () => {
+	// sync DB tags
+	Stats.sync();
+
 	console.log('Connected to Discord!');
 	discordClient.user.setPresence({ activities: [{ name: 'Kellner' }] });
 
@@ -281,27 +324,81 @@ discordClient.on('interactionCreate', async interaction => {
 	} else if (commandName === 'ban') {
 		await interaction.reply(`Bann Funktion in Arbeit.`);
 	} else if (commandName === 'update') {
-        const row = new MessageActionRow()
-			.addComponents(
-				new MessageSelectMenu()
-					.setCustomId('select')
-					.setPlaceholder('Nothing selected')
-					.addOptions([
-						{
-							label: 'Select me',
-							description: 'This is a description',
-							value: 'first_option',
-						},
-						{
-							label: 'You can select me too',
-							description: 'This is also a description',
-							value: 'second_option',
-						},
-					]),
-			);
+		await interaction.reply(`Update Funktion in Arbeit.`);
+	} else if (commandName === 'dbtest') {
 
-		await interaction.reply({ content: 'Update Funktion in Arbeit.', components: [row] });
+
+		/*
+			/dbtest name desc
+		*/
+		// define Tag and Description for DB entry
+		const tagName = interaction.options.getString('name');
+		const tagDescription = interaction.options.getString('description');
+
+		console.log(`Tag: ${tagName} - ${tagDescription}`);
+
+		try {
+			const tag = await Stats.create({
+				name: tagName,
+				messages: tagDescription,
+				characters: interaction.user.username,
+				characters: interaction.user.username,
+			});
+
+			return interaction.reply(`Tag ${tag.name} added.`);
+		}
+		catch (error) {
+			if (error.name === 'SequelizeUniqueConstraintError') {
+				return interaction.reply('That tag already exists.');
+			}
+
+			return interaction.reply('Something went wrong with adding a tag.');
+		}
+
+
+        // const row = new MessageActionRow()
+		// 	.addComponents(
+		// 		new MessageSelectMenu()
+		// 			.setCustomId('select')
+		// 			.setPlaceholder('Nothing selected')
+		// 			.addOptions([
+		// 				{
+		// 					label: 'Select me',
+		// 					description: 'This is a description',
+		// 					value: 'first_option',
+		// 				},
+		// 				{
+		// 					label: 'You can select me too',
+		// 					description: 'This is also a description',
+		// 					value: 'second_option',
+		// 				},
+		// 			]),
+		// 	);
+
+		// await interaction.reply({ content: 'Update Funktion in Arbeit.', components: [row] });
 	}
+});
+
+
+discordClient.on('messageCreate', async message => {
+
+		try {
+			const tag = await Stats.create({
+				userid: message.author.id,
+				messages: 69,
+				characters: 6969,
+				jointime: Date.UTC(),
+			});
+
+			console.log(`Message from ${message.author.username} entered into db!`);
+		}
+		catch (error) {
+			if (error.name === 'SequelizeUniqueConstraintError') {
+				return console.log(`Entry already exists`);
+			}
+
+			return console.log(`Something went wrong.`);
+		}
 });
 
 // Button Usage
