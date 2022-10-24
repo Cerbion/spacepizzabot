@@ -23,20 +23,24 @@ const DB_PASS = process.env.DB_PASS;
 var GUILDID = process.env.GUILDID;
 var CLIENTID = process.env.CLIENTID;
 var LOGGING_CHANNEL_ID = process.env.LOGGING_CHANNEL_ID;
+var NEWS_CHANNEL_ID = process.env.NEWS_CHANNEL_ID;
 var ROLE_CERB = process.env.ROLE_CERB;
 var ROLE_NETT = process.env.ROLE_NETT;
 var ROLE_THOR = process.env.ROLE_THOR;
 var ROLE_LITA = process.env.ROLE_LITA;
 var ROLE_PAND = process.env.ROLE_PAND;
+var ROLE_YASH = process.env.ROLE_YASH;
 var ROLE_VERIFIED = process.env.ROLE_VERIFIED;
+var ROLE_18 = process.env.ROLE_18;
 
 // CONFIG
-const allchannels = ['cerbion','thorstenselbst','nettgemeint','litanoela','dapandaraw'];
+const allchannels = ['cerbion','thorstenselbst','nettgemeint','litanoela','dapandaraw','yashiachan'];
 const id_cerb = 38371604;
 const id_thor = 715781187;
 const id_nett = 83826505;
 const id_lita = 610059339;
 const id_pand = 131797761;
+const id_yash = 69; // WRONG
 const NL = "\n";
 const HR = "\n────────────────────────\n";
 
@@ -152,8 +156,55 @@ discordClient.once('ready', () => {
 		'hey Lita! :wave:',
 		'das Kühlzeug wird langsam wieder warm, Yashia würdest du so nett sein und nochmal kurz deine Hände ranhalten?',
 		'das Leben.. ehh.. findet einen Weg...  zur Pizza!',
+		'mag jemand mein Duschbruder sein?',
+		'Pizza ist einfach richtig MÄNNLICH.',
+		'alles saugend ihr Geringverdiener?',
+		'ich fahre die großen Pötte.',
+		'Hühnchen ist nicht vegan?',
+		'dumme Sprüche? Kann ich.',
+		'kein Bier vor vier, gilt auch fürs Alter.',
+		'Homosexualität... hihihihihihihihihihihihi.',
+		'ich bin zu alt für den Scheiß.',
+		'Hauptplatine beschädigt, Mainframe Systeme kritisch - klingt das nicht super cool?!',
+		'hehe, 69.',
+
+
+		't̯͖̮̰͓͙͇͖͎̖͚̽ͬ͑͗ͤ̄͆͂͆ͧ̋ͫͅh̞̼̹̲̘̯͔̠͈͇̯̑ͣͤͬ͌̈̐̌̇ͪ̾e͇̻͎ ̧̮̈e̫̜͙͙̻n͌͑̃̓̀̂ͮ̉̐d̔̀ͣͧ̓̃͊̇͏͕̰̮͉̞̘͚ͅ ̛̞̜͉͔̜̣̻̯̫̿̍͌ͦ͒͌ͬ͗ͤí̺̪͇̪̉̏́s͕̼̟̱̘̭͓̘͒̍ͧ̉ͤ̾͂ͮ̚ͅ ̸͚̦̘̳̘̞̝̩͖̻͈͓̕ͅǹe̵̴ͪ̑͐͠a̶͍͉̘̪̼͚̣̜̭̩̰̹͌ͯͯͯ̆̉̓͊͗ͭ̌̔̒ͅŕ͇̩͉̙̃̾̓̈͢ͅ.̸̡͕͉̣͓͓̣̲̗ͬ̃̈́͌̆̈ͦ̄͟',
+
+
+		'Gestern wurden hier etwa 159 Pizzen bestellt und verspeist!',
+		'oh was Süßes!',
+		'weeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+		'ich frage mich ob die stetig wachsende Entropie im Universum auch zu temporalen Anomalien führen kann.',
+		'wenn Tomaten Obst sind... Bedeutet dass, das Ketchup Marmelade ist!?',
+		'!songwunsch Dörte - LOS THORSTEN!',
+		'meine Güte Cerbion, hängst du immer noch bei Malenia?',
+		'Easyboy und Casualman sind letzte Folge auf den Fast Vermuter getroffen, so spannend!',
+		'Panda ist einfach die besteste Zuckermaus. <3',
+		'LUUUUTAAAAAAAAAAAAAAAAAAAAAAAAAA!!!!!!',
 		'sollten wir eine Selbsthilfegruppe eröffnen? Ihr wisst schon wegen dem Pizzafetisch.'];
-	log(`Ich beginne nun meine Schicht, ${worktodo.random()}`);
+	var randomWork = worktodo.random();
+	log(`Ich beginne nun meine Schicht, ${randomWork}`);
+
+	// Reminder for Roles & Channels
+	if(isMonday())
+	{
+		const nChannel = discordClient.channels.cache.get(NEWS_CHANNEL_ID);
+		try
+		{
+			nChannel.send("Einen wunderschönen Montag! ..." + randomWork
+				+ "\n\n**Kleine Erinnerung an alle:**"
+				+ "\n> Wenn ihr kaum Kanäle seht oder nichts schreiben könnt, habt ihr vielleicht die Regeln nicht akzeptiert.. holt das hier nach: <#956311310692413440>"
+				+ "\n> Wer in den Subchanneln mitlesen und -reden möchte, braucht die entsprechende Rolle, holt sie euch: <#962839423362408508>"
+				+ "\n> Ihr möchtet **noch** mehr Content? Bei <#1033835016121237544> solltet ihr fündig werden!"
+				+ "\n> Ihr seid wundervoll, habt eine schöne Woche! ♥");
+		}
+		catch(e)
+		{
+			console.log(e);
+			log("Konnte nicht in die news reinposten:\n\n" + e);
+		}
+	}
 
 	// Let Twitch services start
 	tmiClient.connect();
@@ -210,12 +261,12 @@ discordClient.on('interactionCreate', async interaction => {
 					.setLabel('nettgemeint')
 					.setStyle('SUCCESS')
 					.setEmoji('🤖'),
-			).addComponents(
-				new MessageButton()
-					.setCustomId('thor')
-					.setLabel('Thorsten')
-					.setStyle('SUCCESS')
-					.setEmoji('🎵'),
+			// ).addComponents(
+			// 	new MessageButton()
+			// 		.setCustomId('thor')
+			// 		.setLabel('Thorsten')
+			// 		.setStyle('SUCCESS')
+			// 		.setEmoji('🎵'),
 			).addComponents(
 				new MessageButton()
 					.setCustomId('lita')
@@ -228,6 +279,12 @@ discordClient.on('interactionCreate', async interaction => {
 					.setLabel('Panda')
 					.setStyle('SUCCESS')
 					.setEmoji('🦊'),
+			).addComponents(
+				new MessageButton()
+					.setCustomId('yash')
+					.setLabel('Yashia')
+					.setStyle('SUCCESS')
+					.setEmoji('🍽'),
 			);
 		await interaction.reply({ files: [banner], ephemeral: false, embeds: [embed], components: [row], fetchReply: true  });
 	} else if (commandName === 'rules') {
@@ -263,13 +320,15 @@ discordClient.on('interactionCreate', async interaction => {
 		.setTitle('Regel 7: Lasst ein Trinkgeld für den Klomann da');
 		const rulebutton = new MessageEmbed()
 			.setColor('#44ff88')
-			.setTitle('Hast du alle Regeln gelesen, verstanden und akzeptierst diese?');
+			.setTitle('Hast du alle Regeln gelesen, verstanden und akzeptierst diese?')
+			.setDescription('Du musst die Regeln mit dem Button hier akzeptieren um die anderen Kanäle sehen zu können!' + NL +
+			'Mehr Kanäle findest du bei <#962839423362408508> und in <#1033835016121237544>!');
 
 		const row = new MessageActionRow()
 			.addComponents(
 				new MessageButton()
 					.setCustomId('rules')
-					.setLabel('Ja, Regeln sind cool.')
+					.setLabel('Ja, Regeln sind cool!')
 					.setStyle('SUCCESS')
 					.setEmoji('✔️'),
 			);
@@ -282,19 +341,20 @@ discordClient.on('interactionCreate', async interaction => {
 		.setColor('#44ff88')
 		.setTitle('Streamplan')
 		.setImage('https://cerbion.net/content/spacepizzainn/SpacePizzaInnSpinning.gif')
-		.setDescription('Gemeinsamer Streamplan von nettgemeint, Panda, Thorsten, Lita und Cerbion.')
+		.setDescription('Alle Streams auf einen Blick.')
 			.addFields(
-				{ name: 'ACHTUNG', value: 'Sowohl Lita als auch Thorsten müssen aktuell wegen der Arbeit noch sehen wann genau das Streaming stattfinden wird, Streams werden vorerst relativ spontan für die beiden sein!' },
-				{ name: 'MONTAG', value: 'Cerbion • Ab 17 Uhr' },
-				{ name: 'DIENSTAG', value: 'ggf. Thorsten • Ab ~19-20 Uhr' },
-				{ name: 'MITTWOCH', value: 'Cerbion • Ab 17 Uhr' },
-				{ name: 'DONNERSTAG', value: 'ggf. Thorsten • Ab ~19-20 Uhr' },
-				{ name: 'FREITAG', value: 'Cerbion • Ab 17 Uhr' + NL + 'nettgemeint • Ab 21 Uhr' },
-				{ name: 'SAMSTAG', value: 'Cerbion • Ab 16 Uhr' },
-				{ name: 'SONNTAG', value: 'nettgemeint • Ab 9 Uhr' + NL + 'Panda • Ab 15 Uhr' },
+				{ name: 'LitaNoela', value: 'Streams finden vorerst nur spontan statt!' },
+				{ name: 'THORSTENselbst', value: 'Streams finden vorerst nur spontan statt!' },
+				{ name: 'DaPandaRaw', value: 'Aktuell finden keine Streams statt, bis die Weiterbildung abgeschlossen ist!' },
 			);
 
-		await interaction.reply({ files: [banner], ephemeral: false, embeds: [section1]  });
+		const monday = new MessageEmbed()
+		.setColor('#44ff88')
+		.setTitle('Montag')
+		.setDescription('Wir sprechen nicht über das Space Pizza Inn. ;)' + NL + 'Gib niemals eine Bestellung ab, die du nicht bezahlen kannst.')
+		.setThumbnail('https://cerbion.net/content/spacepizzainn/Wo_Mo.png');
+
+		await interaction.reply({ files: [banner], ephemeral: false, embeds: [monday, tuesday, wednesday, thursday, friday, saturday, sunday]  });
 	} else if (commandName === 'faq') {
 
 		const banner = 'https://cerbion.net/content/spacepizzainn/DC_FAQ1.png';
@@ -302,7 +362,7 @@ discordClient.on('interactionCreate', async interaction => {
 		const section1 = new MessageEmbed()
 		.setColor('#44ff88')
 		.setTitle('F: Was ist das hier?')
-		.setDescription('A: Der Community Discord Server von den Streamern: LitaNoela, THORSTENselbst, DaPandaRaw, nettgemeint und Cerbion!');
+		.setDescription('A: Der Community Discord Server von den Streamern: LitaNoela, YashiaChan, THORSTENselbst, DaPandaRaw, nettgemeint und Cerbion!');
 		const section2 = new MessageEmbed()
 		.setColor('#44ff88')
 		.setTitle('F: Ich interessiere mich nicht für alle Streamer, was nun?')
@@ -323,6 +383,50 @@ discordClient.on('interactionCreate', async interaction => {
 		await interaction.reply({ files: [banner], ephemeral: false, embeds: [section1, section2, section3, section4, section5]  });
 	} else if (commandName === 'ban') {
 		await interaction.reply(`Bann Funktion in Arbeit.`);
+	} else if (commandName === '18') {
+		// Give / Take 18+ Role
+		// const targetUser = interaction.options.get('')
+		// if(user.roles.cache.some(role => role.id === ROLE_18))
+		// {
+		// 	user.roles.remove(ROLE_18);
+		// 	await interaction.reply({ content: 'Du bist bereits verifiziert!', ephemeral: true });
+		// 	log(`${interaction.user.username} wurde die 18+ Rolle entzogen.`);
+		// }
+		// else
+		// {
+		// 	user.roles.add(ROLE_18);
+		// 	await interaction.reply({ content: 'Du bist nun verifiziert, viel Spaß auf dem Server!', ephemeral: true });
+		// 	log(`${interaction.user.username} wurde die 18+ Rolle gegeben.`);
+		// }
+	} else if (commandName === 'shoutout') {
+
+		try
+		{
+			const soTarget = interaction.options.getString('twitchuser');
+			const soURL = 'https://twitch.tv/' + soTarget.trim().toLowerCase();
+
+			var soDesc = "Knusprig pikanter Stream, frisch aus dem Ofen!";	// READ FROM API
+			var soTitle = "Schaut vorbei!";	// READ FROM API
+			var soThumbnail = "https://cerbion.net/content/spacepizzainn/SpacePizzaInnSpinning.gif";	// READ FROM API
+
+
+			const embed = new MessageEmbed()
+				.setColor('#44ff88')
+				.setAuthor({name: '🍕 Unsere heiße Empfehlung! 🍕'})
+				.setTitle("Twitch.tv/" + soTarget + " ist gerade LIVE!")
+				.setFooter({text: soURL})
+				.setURL(soURL)
+				.setDescription(soDesc)
+				.setThumbnail(soThumbnail)
+				.addFields(
+					{ name: 'Jetzt Live!', value: soTitle },
+				);
+			await interaction.reply({ ephemeral: false, embeds: [embed]  });
+		}
+		catch(e)
+		{
+			log("Shoutout fehlgeschlagen!\n\n" + e);
+		}
 	} else if (commandName === 'update') {
 		await interaction.reply(`Update Funktion in Arbeit.`);
 	} else if (commandName === 'dbtest') {
@@ -436,20 +540,20 @@ discordClient.on('interactionCreate', async interaction => {
 			await interaction.reply({ content: 'Du folgst nun nettgemeint!', ephemeral: true });
 			log(`${interaction.user.username} folgt jetzt nettgemeint.`);
 		}
-	} else if (buttonName == 'thor')
-	{
-		if(user.roles.cache.some(role => role.id === ROLE_THOR))
-		{
-			user.roles.remove(ROLE_THOR);
-			await interaction.reply({ content: 'Du hast Thorsten entfolgt!', ephemeral: true });
-			log(`${interaction.user.username} folgt nicht mehr Thorsten.`);
-		}
-		else
-		{
-			user.roles.add(ROLE_THOR);
-			await interaction.reply({ content: 'Du folgst nun Thorsten!', ephemeral: true });
-			log(`${interaction.user.username} folgt jetzt Thorsten.`);
-		}
+	// } else if (buttonName == 'thor')
+	// {
+	// 	if(user.roles.cache.some(role => role.id === ROLE_THOR))
+	// 	{
+	// 		user.roles.remove(ROLE_THOR);
+	// 		await interaction.reply({ content: 'Du hast Thorsten entfolgt!', ephemeral: true });
+	// 		log(`${interaction.user.username} folgt nicht mehr Thorsten.`);
+	// 	}
+	// 	else
+	// 	{
+	// 		user.roles.add(ROLE_THOR);
+	// 		await interaction.reply({ content: 'Du folgst nun Thorsten!', ephemeral: true });
+	// 		log(`${interaction.user.username} folgt jetzt Thorsten.`);
+	// 	}
 	} else if (buttonName == 'lita')
 	{
 		if(user.roles.cache.some(role => role.id === ROLE_LITA))
@@ -476,6 +580,20 @@ discordClient.on('interactionCreate', async interaction => {
 		{
 			user.roles.add(ROLE_PAND);
 			await interaction.reply({ content: 'Du folgst nun Panda!', ephemeral: true });
+			log(`${interaction.user.username} folgt jetzt Panda.`);
+		}
+	} else if (buttonName == 'yash')
+	{
+		if(user.roles.cache.some(role => role.id === ROLE_YASH))
+		{
+			user.roles.remove(ROLE_YASH);
+			await interaction.reply({ content: 'Du hast Yashia entfolgt!', ephemeral: true });
+			log(`${interaction.user.username} folgt nicht mehr Panda.`);
+		}
+		else
+		{
+			user.roles.add(ROLE_YASH);
+			await interaction.reply({ content: 'Du folgst nun Yashia!', ephemeral: true });
 			log(`${interaction.user.username} folgt jetzt Panda.`);
 		}
 	} else if (buttonName == 'rules')
@@ -517,22 +635,21 @@ discordClient.on('messageDelete', async message => {
 
 	console.log('Message has been deleted.');
 	var logtext = "Eine Nachricht wurde gelöscht:";
-	logtext += "\n\nGelöschte Nachricht:\n" + codeBlock(msg.content);
+	logtext += "\n" + codeBlock(msg.content);
 	log(logtext);
 	return;
 });
 
 discordClient.on('userUpdate', async (olduser, newuser) => {
 	console.log('User Data changed!');
-	var logtext = "Name von " + newuser.toString() + " wurde geändert:";
-	logtext += "\n\nOriginalname:" + inlineCode(olduser.username);
+	var logtext = "Die Daten von " + newuser.toString() + " wurden geändert, siehe **Servereinstellungen > Audit-Log**";
 	log(logtext);
 	return;
 });
 
 discordClient.on('guildMemberRemove', async guildmember => {
 	console.log('User left the Server!');
-	var logtext = guildmember.username + guildmember.tag + " hat den Server verlassen oder wurde gekickt.";
+	var logtext = guildmember.user.tag + " hat den Server verlassen oder wurde gekickt.";
 	log(logtext);
 	return;
 });
@@ -559,4 +676,8 @@ async function log(_content)
 
 Array.prototype.random = function(){
   return this[Math.floor(Math.random()*this.length)];
+}
+
+function isMonday(date = new Date()) {
+  return date.getDay() === 1;
 }
