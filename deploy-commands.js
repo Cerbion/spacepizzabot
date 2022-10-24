@@ -22,8 +22,15 @@ const commands = [
 	new SlashCommandBuilder().setName('giveaway').setDescription('Startet ein Giveaway.\n\nNutzung: `/so twitchname`'),
 	new SlashCommandBuilder().setName('poll').setDescription('WIP'),
 	new SlashCommandBuilder().setName('warn').setDescription('Verwarnt einen Nutzer.\n\nNutzung: `/warn @user`'),
-	new SlashCommandBuilder().setName('so').setDescription('Shoutout für einen anderen twitchuser.\n\nNutzung: `/so twitchname`'),
 	new SlashCommandBuilder().setName('update').setDescription('WIP'),
+
+	new SlashCommandBuilder()
+		.setName('shoutout')
+		.setDescription('Shoutout für einen anderen twitchuser.\n\nNutzung: `/so twitchname`')
+		.addStringOption(option =>
+			option.setName('twitchuser')
+				.setDescription('Twitch Nutzername für den Shoutout')
+				.setRequired(true)),
 
 	new SlashCommandBuilder()
 		.setName('dbtest')
@@ -36,6 +43,15 @@ const commands = [
 			option.setName('description')
 				.setDescription('tag description')
 				.setRequired(true)),
+
+	new SlashCommandBuilder()
+		.setName('18')
+		.setDescription('Gibt oder nimmt die 18+ Rolle bei einem Nutzer.\n\nNutzung: `/18 @user`')
+		.addStringOption(option =>
+			option.setName('user')
+				.setDescription('Discord Username')
+				.setRequired(true)),
+
 ]
 	.map(command => command.toJSON());
 
