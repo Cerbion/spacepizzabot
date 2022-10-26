@@ -486,6 +486,7 @@ discordClient.on('interactionCreate', async interaction => {
 
 discordClient.on('messageCreate', async message => {
 
+	return; // DISABLED
 		try {
 			const tag = await Stats.create({
 				userid: message.author.id,
@@ -588,13 +589,13 @@ discordClient.on('interactionCreate', async interaction => {
 		{
 			user.roles.remove(ROLE_YASH);
 			await interaction.reply({ content: 'Du hast Yashia entfolgt!', ephemeral: true });
-			log(`${interaction.user.username} folgt nicht mehr Panda.`);
+			log(`${interaction.user.username} folgt nicht mehr Yashia.`);
 		}
 		else
 		{
 			user.roles.add(ROLE_YASH);
 			await interaction.reply({ content: 'Du folgst nun Yashia!', ephemeral: true });
-			log(`${interaction.user.username} folgt jetzt Panda.`);
+			log(`${interaction.user.username} folgt jetzt Yashia.`);
 		}
 	} else if (buttonName == 'rules')
 	{
