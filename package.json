@@ -1,6 +1,10 @@
 {
   "name": "space-pizza-bot",
   "version": "0.0.1",
+  "engines": {
+    "node": "16.x",
+    "npm": "*"
+  },
   "description": "A JS Discord Bot designed to work for the Space Pizza Inn discord Server.",
   "main": "spacepizzabot.js",
   "scripts": {

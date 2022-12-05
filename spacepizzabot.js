@@ -45,13 +45,13 @@ const NL = "\n";
 const HR = "\n────────────────────────\n";
 
 // Initialize DB
-const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
-	host: DB_HOST,
-	dialect: 'mysql',
-	logging: false,
-	// SQLite only
-	// storage: 'database.sql',
-});
+// const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
+// 	host: DB_HOST,
+// 	dialect: 'mysql',
+// 	logging: false,
+// 	// SQLite only
+// 	// storage: 'database.sql',
+// });
 /*
  * equivalent to: CREATE TABLE tags(
  * name VARCHAR(255) UNIQUE,
@@ -60,23 +60,23 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
  * usage_count  INT NOT NULL DEFAULT 0
  * );
  */
-const Stats = sequelize.define('stats', {
-	userid: {
-		type: Sequelize.STRING,
-		unique: true,
-	},
-	messages: {
-		type: Sequelize.INTEGER,
-		defaultValue: 0,
-		allowNull: false,
-	},
-	characters: {
-		type: Sequelize.INTEGER,
-		defaultValue: 0,
-		allowNull: false,
-	},
-	jointime: Sequelize.DATE,
-});
+// const Stats = sequelize.define('stats', {
+// 	userid: {
+// 		type: Sequelize.STRING,
+// 		unique: true,
+// 	},
+// 	messages: {
+// 		type: Sequelize.INTEGER,
+// 		defaultValue: 0,
+// 		allowNull: false,
+// 	},
+// 	characters: {
+// 		type: Sequelize.INTEGER,
+// 		defaultValue: 0,
+// 		allowNull: false,
+// 	},
+// 	jointime: Sequelize.DATE,
+// });
 
 
 // Create a new discord client instance
@@ -98,7 +98,7 @@ const tmiClient = new tmi.Client(opts);
 // When the client is ready, run this code (only once)
 discordClient.once('ready', () => {
 	// sync DB tags
-	Stats.sync();
+	// Stats.sync();
 
 	console.log('Connected to Discord!');
 	discordClient.user.setPresence({ activities: [{ name: 'Kellner' }] });
