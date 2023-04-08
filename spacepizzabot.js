@@ -1,5 +1,5 @@
 // Require the necessary discord.js classes
-const { Client, Intents, MessageActionRow, MessageButton, MessageSelectMenu, MessageEmbed } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, MessageActionRow, MessageButton, MessageSelectMenu, MessageEmbed } = require('discord.js');
 const { bold, italic, strikethrough, underscore, spoiler, quote, blockQuote, codeBlock, inlineCode } = require('@discordjs/builders');
 const dotenv = require('dotenv');
 const tmi = require('tmi.js');
@@ -81,8 +81,8 @@ const HR = "\n──────────────────────
 
 // Create a new discord client instance
 const discordClient = new Client({
-	intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_MESSAGES],
-	partials: ['MESSAGE', 'CHANNEL', 'REACTION']
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMessages],
+	partials: [Partials.Message, Partials.Channel, Partials.Reaction]
 });
 
 // Create a new tmi client instance
